@@ -117,8 +117,8 @@ const actions = {
       const snapShot = await db.collection(`users/${getters.userUid}/todos`).get()
       snapShot.forEach(async (doc) => {
         await doc.ref.collection(`comments/${getters.userUid}/message`).doc(id).delete()
-        commit('removeComment', { id })
       })
+      commit('removeComment', { id })
     }
   },
   // FIXME: id指定してログインユーザーのコメントを表示
