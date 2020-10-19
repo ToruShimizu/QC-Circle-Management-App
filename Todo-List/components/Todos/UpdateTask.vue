@@ -66,7 +66,12 @@
                   ></v-text-field>
                 </v-col>
                 <AddComment :taskId="editTodo.task.id" />
-                <Comment :taskId="editTodo.task.id" />
+                <Comment
+                  :taskId="editTodo.task.id"
+                  v-for="comment in comments"
+                  :key="comment.id"
+                  :comment="comment"
+                />
               </v-row>
             </v-container>
             <v-card-actions>
@@ -82,6 +87,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import AddComment from '@/components/Comment/AddComment'
 import Comment from '@/components/Comment/Comment'
 export default {
@@ -119,6 +125,9 @@ export default {
     return {
       updateDateMenu: false
     }
+  },
+  computed: {
+    ...mapState('modules/todos', ['comments'])
   },
   methods: {
     updateTask() {
