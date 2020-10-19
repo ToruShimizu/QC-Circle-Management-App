@@ -24,7 +24,7 @@
                 <v-card-actions>
                   <v-btn
                     color="success"
-                    @click="updateUser"
+                    @click="updateUserName"
                     :loading="loadingUpdateUserName"
                     :disabled="loadingUpdateUserName"
                   >
@@ -84,9 +84,9 @@ export default {
     }
   },
   methods: {
-    updateUser() {
+    updateUserName() {
       this.loader = 'loadingUpdateUserName'
-      this.$store.dispatch('modules/auth/updateUser', {
+      this.$store.dispatch('modules/auth/updateUserName', {
         userName: this.updateUserName
       })
       this.updateUserName = ''

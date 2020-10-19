@@ -77,7 +77,7 @@ const actions = {
   },
   // ユーザー情報の更新
   // FIXME:ユーザーのstate更新
-  async updateUser({ commit }, { userName }) {
+  async updateUserName({ commit }, { userName }) {
     const user = await firebase.auth().currentUser
     try {
       await user.updateProfile({
