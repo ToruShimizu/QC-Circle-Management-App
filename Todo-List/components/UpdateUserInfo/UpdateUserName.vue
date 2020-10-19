@@ -24,7 +24,7 @@
                 <v-card-actions>
                   <v-btn
                     color="success"
-                    @click="updateUserName"
+                    @click="editUserName"
                     :loading="loadingUpdateUserName"
                     :disabled="loadingUpdateUserName"
                   >
@@ -78,7 +78,7 @@ export default {
     return {
       loader: null,
       loadingUpdateUserName: false,
-      updateUserName: '',
+      editUserName: '',
       validate: true,
       nameRules: [(v) => !!v || '名前は必須です']
     }
