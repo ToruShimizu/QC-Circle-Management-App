@@ -100,7 +100,7 @@ export default {
         { text: '期限', value: 'date' },
         { text: '削除', value: 'remove', sortable: false }
       ],
-      editTodo: null,
+      editTodo: {},
       cancelTodo: null,
       updateTaskDialog: false
     }
@@ -139,7 +139,7 @@ export default {
     async openUpdateTask(todo) {
       const id = String(todo.id)
       await this.fetchComments(id)
-      this.editTodo = todo
+      this.editTodo = Object.assign({}, todo)
       this.updateTaskDialog = true
     },
     closeUpdateTask() {

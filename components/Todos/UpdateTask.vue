@@ -21,7 +21,7 @@
                 <!-- タスク編集エリア -->
                 <v-col cols="12">
                   <v-text-field
-                    v-model="editTodo"
+                    v-model="editTodo.title"
                     label="タスクを変更する"
                     prepend-inner-icon="mdi-pencil-outline"
                     :rules="[validRules.titleRules.required]"
@@ -38,7 +38,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        v-model="editTodo"
+                        v-model="editTodo.date"
                         label="期限を変更する"
                         prepend-inner-icon="mdi-calendar-today"
                         readonly
@@ -47,7 +47,7 @@
                       ></v-text-field>
                     </template>
                     <v-date-picker
-                      v-model="editTodo"
+                      v-model="editTodo.date"
                       no-title
                       scrollable
                       @input="updateDateMenu = false"
@@ -57,14 +57,14 @@
                 <!-- 詳細編集エリア -->
                 <v-col cols="12">
                   <v-text-field
-                    v-model="editTodo"
+                    v-model="editTodo.detail"
                     label="タスクの詳細を変更する"
                     prepend-inner-icon="mdi-briefcase-outline"
                     clearable
                   ></v-text-field>
                 </v-col>
-                <AddComment :task-id="editTodo" />
-                <Comment :task-id="editTodo" />
+                <AddComment :task-id="editTodo.id" />
+                <Comment :task-id="editTodo.id" />
               </v-row>
             </v-container>
             <v-card-actions>
@@ -111,16 +111,14 @@ export default {
     ...mapState('modules/comment', ['comments'])
   },
   methods: {
-    handleUpdateTask() {
-      const editTodo = this.editTodo
-      if (!editTodo.task.title) {
+    async handleUpdateTask() {
+      const task = this.editTodo
+      if (!task.title) {
         this.$refs.form.validate()
         return
       }
-      this.updateTask({
-        id: editTodo.task.id,
-        task: editTodo.task
-      })
+      await this.updateTask(task)
+      await this.fetchTodos()
       this.closeUpdateTask()
     },
     closeUpdateTask() {
@@ -131,7 +129,7 @@ export default {
       this.$refs.form.reset()
       this.$emit('cancel-update-task')
     },
-    ...mapActions('modules/todos', ['updateTask'])
+    ...mapActions('modules/todos', ['fetchTodos', 'updateTask'])
   }
 }
 </script>

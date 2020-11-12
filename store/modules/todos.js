@@ -21,9 +21,9 @@ const mutations = {
     state.todos.splice(index, 1)
     console.log('removeTask')
   },
-  updateTask(state, { id, task }) {
+  updateTask(state, task) {
     // インデックスを取得
-    const index = state.todos.findIndex((todo) => todo.id === id)
+    const index = state.todos.findIndex((todo) => todo.id === task.id)
     state.todos[index] = task
     console.log('updateTask')
   },
@@ -62,10 +62,18 @@ const actions = {
     commit('addTodos', todo)
   },
   // タスク更新
-  async updateTask({ getters, commit }, { id, task }) {
+  async updateTask({ getters, commit }, task) {
+    const id = task.id
+    const todo = {
+      id,
+      title: task.title,
+      date: task.date,
+      done: false,
+      created: firebase.firestore.FieldValue.serverTimestamp()
+    }
     if (getters.userUid) {
-      await db.collection(`users/${getters.userUid}/todos`).doc(id).update(task)
-      commit('updateTask', { id, task })
+      await db.collection(`users/${getters.userUid}/todos`).doc(id).update(todo)
+      commit('updateTask', todo)
     }
   },
   // タスク削除
