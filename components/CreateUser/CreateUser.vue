@@ -7,13 +7,13 @@
             <template v-slot:text> ※ 作成後にログインします。 </template>
           </FormCardText>
           <v-form ref="form" lazy-validation @submit.prevent="createUser">
-            <FormUserName :user-name.sync="createUser.name" :name-label="'登録する名前'" />
+            <FormUserName :user-name.sync="createNewUser.name" :name-label="'登録する名前'" />
             <FormUserEmail
-              :user-email.sync="createUser.email"
+              :user-email.sync="createNewUser.email"
               :email-label="'登録するメールアドレス'"
             />
             <FormUserPassword
-              :user-password.sync="createUser.password"
+              :user-password.sync="createNewUser.password"
               :passwordLabel="'登録するパスワード'"
             />
 
