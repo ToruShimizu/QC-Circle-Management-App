@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+import { i18nOptions } from './locales/i18n'
 
 export default {
   /*
@@ -37,12 +38,21 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ['~/plugins/firebase'],
+  plugins: ['~/plugins/firebase', '~/plugins/rules.js'],
+  modules: ['nuxt-i18n'],
+
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
    */
-  components: ['@/components/'],
+  components: [
+    {
+      path: '@/components/',
+      pathPrefix: false
+    }
+  ],
+  i18n: i18nOptions,
+
   /*
    ** Nuxt.js dev-modules
    */
@@ -54,7 +64,6 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: [],
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
