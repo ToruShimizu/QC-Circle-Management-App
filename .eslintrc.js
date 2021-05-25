@@ -13,6 +13,7 @@ module.exports = {
   rules: {
     'no-console': 'off',
     'vue/max-attributes-per-line': 'off',
-    'dot-notation': 'off'
+    'dot-notation': 'off',
+    'vue/one-component-per-file': 'off'
   }
 }
