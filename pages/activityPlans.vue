@@ -161,10 +161,10 @@ export default {
       }
       return returnvalue
     },
-    ...mapGetters('modules/activity-plans/activityPlans', ['sortByCategory', 'sortByAscDate', 'sortByDescDate']),
-    ...mapGetters('modules/user/auth', ['photoURL']),
+    ...mapGetters('modules/activityPlans', ['sortByCategory', 'sortByAscDate', 'sortByDescDate']),
+    ...mapGetters('modules/auth', ['photoURL']),
     ...mapGetters('modules/circle', ['circleName']),
-    ...mapState('modules/activity-plans/activityPlans', ['activityPlans']),
+    ...mapState('modules/activityPlans', ['activityPlans']),
     ...mapState('modules/circle', ['circle'])
   },
   watch: {

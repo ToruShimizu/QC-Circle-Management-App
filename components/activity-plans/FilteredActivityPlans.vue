@@ -36,12 +36,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('modules/activity-plans/activityPlans', [
+    ...mapGetters('modules/activityPlans', [
       'completedActivityPlansLength',
       'remainingActivityPlansLength',
       'completionRateOfActivityPlans'
     ]),
-    ...mapState('modules/activity-plans/activityPlans', ['activityPlans'])
+    ...mapState('modules/activityPlans', ['activityPlans'])
   }
 }
 </script>

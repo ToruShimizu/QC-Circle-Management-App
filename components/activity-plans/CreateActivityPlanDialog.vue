@@ -123,7 +123,7 @@ export default {
       this.$emit('close', false)
     },
 
-    ...mapActions('modules/activity-plans/activityPlans', ['createActivityPlan', 'uploadPlanContentsImageFile'])
+    ...mapActions('modules/activityPlans', ['createActivityPlan', 'uploadPlanContentsImageFile'])
   }
 }
 </script>

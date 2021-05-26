@@ -17,7 +17,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('modules/common-parts/commonParts', ['snackbar'])
+    ...mapState('modules/commonParts', ['snackbar'])
   },
   watch: {
     snackbar() {
@@ -27,7 +27,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('modules/common-parts/commonParts', ['closeSnackbar'])
+    ...mapMutations('modules/commonParts', ['closeSnackbar'])
   }
 }
 </script>

@@ -1,7 +1,7 @@
 import { auth } from '~/plugins/firebase'
 
 export default function({ store, redirect }) {
-  if (store.state.modules.user.auth.loginUser !== null) return
+  if (store.state.modules.auth.loginUser !== null) return
 
   auth.onAuthStateChanged(user => {
     if (user) {
@@ -12,7 +12,7 @@ export default function({ store, redirect }) {
         uid: user.uid
       }
       // ログインユーザーの情報をstateに入れる
-      store.dispatch('modules/user/auth/setLoginUser', userInfo)
+      store.dispatch('modules/auth/setLoginUser', userInfo)
     } else {
       return redirect('/signIn')
     }

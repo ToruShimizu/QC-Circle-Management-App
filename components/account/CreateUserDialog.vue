@@ -95,7 +95,7 @@ export default {
       this.$emit('close', false)
     },
 
-    ...mapActions('modules/user/auth', ['createUser'])
+    ...mapActions('modules/auth', ['createUser'])
   }
 }
 </script>

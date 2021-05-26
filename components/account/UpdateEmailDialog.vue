@@ -53,7 +53,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('modules/user/auth', ['gettersUserEmail'])
+    ...mapGetters('modules/auth', ['gettersUserEmail'])
   },
   watch: {
     isOpened() {
@@ -73,7 +73,7 @@ export default {
       // ローディングをOFF
       this.isRunning = false
     },
-    ...mapActions('modules/user/userInfo', ['updateEmail'])
+    ...mapActions('modules/userInfo', ['updateEmail'])
   }
 }
 </script>

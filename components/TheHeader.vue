@@ -28,10 +28,10 @@ export default {
     }
   },
   computed: {
-    ...mapState('modules/user/auth', ['loginUser'])
+    ...mapState('modules/auth', ['loginUser'])
   },
   methods: {
-    ...mapActions('modules/user/auth', ['logout'])
+    ...mapActions('modules/auth', ['logout'])
   }
 }
 </script>

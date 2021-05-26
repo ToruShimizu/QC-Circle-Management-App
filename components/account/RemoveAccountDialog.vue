@@ -79,7 +79,7 @@ export default {
       })
       this.$emit('close', false)
     },
-    ...mapActions('modules/user/userInfo', ['removeAccount'])
+    ...mapActions('modules/userInfo', ['removeAccount'])
   }
 }
 </script>

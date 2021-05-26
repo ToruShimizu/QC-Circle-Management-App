@@ -66,7 +66,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('modules/user/auth', ['loginUser'])
+    ...mapState('modules/auth', ['loginUser'])
   },
   methods: {
     // 画像選択画面を開く

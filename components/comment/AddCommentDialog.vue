@@ -74,7 +74,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('modules/user/auth', ['gettersUserName', 'photoURL'])
+    ...mapGetters('modules/auth', ['gettersUserName', 'photoURL'])
   },
   watch: {
     isOpened() {
@@ -97,7 +97,7 @@ export default {
       if (!confirm(comment.message + 'を削除しますか?')) return
       this.removeComment(comment)
     },
-    ...mapActions('modules/activity-plans/activityPlans', ['addComment', 'removeComment'])
+    ...mapActions('modules/activityPlans', ['addComment', 'removeComment'])
   }
 }
 </script>

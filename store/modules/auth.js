@@ -30,7 +30,7 @@ const actions = {
   // ログインユーザー情報の取得
   setLoginUser({ commit, dispatch }, userInfo) {
     commit('setLoginUser', userInfo)
-    dispatch('modules/activity-plans/activityPlans/fetchActivityPlans', null, { root: true })
+    dispatch('modules/activityPlans/fetchActivityPlans', null, { root: true })
     dispatch('modules/circle/fetchCircle', null, { root: true })
   },
   // ログインユーザー情報の削除

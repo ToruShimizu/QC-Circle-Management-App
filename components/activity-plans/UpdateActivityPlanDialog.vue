@@ -131,7 +131,7 @@ export default {
       console.log('hoge')
       await this.updatePlanContentsImageFile(planContents)
     },
-    ...mapActions('modules/activity-plans/activityPlans', [
+    ...mapActions('modules/activityPlans', [
       'updateActivityPlan',
       'removePlanContentsImage',
       'updatePlanContentsImageFile'

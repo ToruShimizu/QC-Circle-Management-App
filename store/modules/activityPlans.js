@@ -95,7 +95,7 @@ const actions = {
           .doc(id)
           .set(createActivityPlanInput)
         commit('createActivityPlan', createActivityPlanInput)
-        commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+        commit('modules/commonParts/openSnackbar', null, { root: true })
       }
     } catch (err) {
       console.log(err)
@@ -135,7 +135,7 @@ const actions = {
           .update(updateActivityPlanInput)
         commit('updateActivityPlan', updateActivityPlanInput)
         planContents.imageFile = null
-        commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+        commit('modules/commonParts/openSnackbar', null, { root: true })
       }
     } catch (err) {
       console.log(err)
@@ -306,7 +306,7 @@ const actions = {
 const getters = {
   // uidの取得
   userUid: (state, getters, rootState, rootGetters) => {
-    return rootGetters['modules/user/auth/uid']
+    return rootGetters['modules/auth/uid']
   },
 
   // 活動計画総数のカウント

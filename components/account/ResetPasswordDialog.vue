@@ -79,7 +79,7 @@ export default {
       // ローディングをOFF
       this.isRunning = false
     },
-    ...mapActions('modules/user/userInfo', ['resetPassword'])
+    ...mapActions('modules/userInfo', ['resetPassword'])
   }
 }
 </script>

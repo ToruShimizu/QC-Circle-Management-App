@@ -12,8 +12,8 @@ const actions = {
         photoURL
       })
       // ログインユーザーの情報を更新
-      commit('modules/user/auth/updateUserAvatar', photoURL, { root: true })
-      commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+      commit('modules/auth/updateUserAvatar', photoURL, { root: true })
+      commit('modules/commonParts/openSnackbar', null, { root: true })
     } catch (err) {
       alert('画像の変更に失敗しました。もう一度やり直してください。')
       console.log(err)
@@ -29,8 +29,8 @@ const actions = {
         await userInfo.updateProfile({
           displayName: username
         })
-        commit('modules/user/auth/updateUsername', username, { root: true })
-        commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+        commit('modules/auth/updateUsername', username, { root: true })
+        commit('modules/commonParts/openSnackbar', null, { root: true })
       } catch (err) {
         alert('ユーザー名の変更に失敗しました。もう一度やり直してください。')
         console.log(err)
@@ -45,8 +45,8 @@ const actions = {
     } else {
       try {
         await userInfo.updateEmail(email)
-        commit('modules/user/auth/updateUserEmail', email, { root: true })
-        commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+        commit('modules/auth/updateUserEmail', email, { root: true })
+        commit('modules/commonParts/openSnackbar', null, { root: true })
       } catch (err) {
         alert('新しいメールアドレスの登録に失敗しました。もう一度やり直してください。')
         console.log(err)
@@ -65,7 +65,7 @@ const actions = {
         await user.reauthenticateWithCredential(credential)
         await user.updatePassword(updatePassword)
         alert('パスワードの変更が完了しました。ログイン画面に戻ります。')
-        dispatch('modules/user/auth/logout', null, { root: true })
+        dispatch('modules/auth/logout', null, { root: true })
       } catch (err) {
         console.log(err)
       }
@@ -94,7 +94,7 @@ const actions = {
         await user.reauthenticateWithCredential(credential)
         await user.delete()
         alert('ユーザー情報を削除しました。ログイン画面に戻ります。')
-        commit('modules/user/auth/deleteLoginUser', null, { root: true })
+        commit('modules/auth/deleteLoginUser', null, { root: true })
       } catch (err) {
         alert('ユーザー情報の削除に失敗しました。もう一度やり直しください。')
         console.log(err)

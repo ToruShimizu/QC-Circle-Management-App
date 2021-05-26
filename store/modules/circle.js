@@ -111,7 +111,7 @@ const actions = {
       }
       commit('createCircle', createCircleInput)
       // スナックバー
-      commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+      commit('modules/commonParts/openSnackbar', null, { root: true })
     } catch (e) {
       alert('サークル作成に失敗しました。もう一度やり直してください')
       console.error(e)
@@ -157,7 +157,7 @@ const actions = {
           .update(updateCircleInput)
         commit('updateCircle', updateCircleInput)
         // スナックバー
-        commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+        commit('modules/commonParts/openSnackbar', null, { root: true })
       }
     } catch (e) {
       alert('サークルの更新に失敗しました。もう一度やり直してください')
@@ -190,7 +190,7 @@ const actions = {
         .doc(getters.circleId)
         .delete()
       commit('removeCircle', getters.circleId)
-      await dispatch('modules/activity-plans/activityPlans/allRemoveActivityPlan', null, {
+      await dispatch('modules/activityPlans/allRemoveActivityPlan', null, {
         root: true
       })
       this.$router.push({ path: 'activityPlans' })
@@ -226,7 +226,7 @@ const actions = {
           .set(addMemberInput)
       }
       commit('addMember', addMemberInput)
-      commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+      commit('modules/commonParts/openSnackbar', null, { root: true })
     } catch (e) {
       alert('メンバー追加に失敗しました。もう一度やり直してください。')
       console.error(e)
@@ -247,7 +247,7 @@ const actions = {
             .update(editMember)
         })
         await commit('updateMember', editMember)
-        commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+        commit('modules/commonParts/openSnackbar', null, { root: true })
       }
     } catch (e) {
       alert('更新に失敗しました。もう一度やり直しください。')
@@ -313,7 +313,7 @@ const getters = {
   },
   // uidの取得
   userUid: (state, getters, rootState, rootGetters) => {
-    return rootGetters['modules/user/auth/uid']
+    return rootGetters['modules/auth/uid']
   }
 }
 

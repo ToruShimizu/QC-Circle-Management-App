@@ -46,8 +46,8 @@ import { mapState, mapGetters } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters('modules/user/auth', ['gettersUsername', 'photoURL', 'gettersUserEmail']),
-    ...mapState('modules/user/auth', ['loginUser'])
+    ...mapGetters('modules/auth', ['gettersUsername', 'photoURL', 'gettersUserEmail']),
+    ...mapState('modules/auth', ['loginUser'])
   }
 }
 </script>

@@ -103,7 +103,7 @@ export default {
       // ローディングをOFF
       this.isRunning = false
     },
-    ...mapActions('modules/user/userInfo', ['updatePassword'])
+    ...mapActions('modules/userInfo', ['updatePassword'])
   }
 }
 </script>

@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import * as auth from './modules/user/auth'
-import * as userInfo from './modules/user/userInfo'
-import * as activityPlans from './modules/activity-plans/activityPlans'
+import * as auth from './modules/auth'
+import * as userInfo from './modules/userInfo'
+import * as activityPlans from './modules/activityPlans'
 import * as circle from './modules/circle'
-import * as commonParts from './modules/common-parts/commonParts'
+import * as commonParts from './modules/commonParts'
 
 Vue.use(Vuex)
 

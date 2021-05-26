@@ -94,7 +94,7 @@ export default {
       this.$refs.form.reset()
     },
 
-    ...mapActions('modules/user/auth', ['googleLogin', 'login'])
+    ...mapActions('modules/auth', ['googleLogin', 'login'])
   }
 }
 </script>

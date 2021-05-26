@@ -52,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('modules/user/auth', ['gettersUsername'])
+    ...mapGetters('modules/auth', ['gettersUsername'])
   },
   watch: {
     isOpened() {
@@ -74,7 +74,7 @@ export default {
       this.isRunning = false
     },
 
-    ...mapActions('modules/user/userInfo', ['updateUsername'])
+    ...mapActions('modules/userInfo', ['updateUsername'])
   }
 }
 </script>

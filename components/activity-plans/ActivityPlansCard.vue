@@ -122,7 +122,7 @@ export default {
       this.selectedItem = contents
       this.isOpenedUpdateActivityPlanDialog = true
     },
-    ...mapActions('modules/activity-plans/activityPlans', ['removeActivityPlan', 'toggleDoneActivityPlan'])
+    ...mapActions('modules/activityPlans', ['removeActivityPlan', 'toggleDoneActivityPlan'])
   }
 }
 </script>
