@@ -1,9 +1,9 @@
-import { auth } from '../plugins/firebase'
+import { auth } from '~/plugins/firebase'
 
-export default function ({ store, redirect }) {
+export default function({ store, redirect }) {
   if (store.state.modules.user.auth.loginUser !== null) return
 
-  auth.onAuthStateChanged((user) => {
+  auth.onAuthStateChanged(user => {
     if (user) {
       const userInfo = {
         displayName: user.displayName,

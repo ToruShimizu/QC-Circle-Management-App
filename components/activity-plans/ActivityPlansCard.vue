@@ -1,14 +1,12 @@
 <template>
   <div class="activity-plans-card">
     <transition-group name="card-anim">
-      <v-card class="mb-5 elevation-5" :key="contents.id">
+      <v-card :key="contents.id" class="mb-5 elevation-5">
         <v-card-actions class="pa-0">
           <v-card-title class="pa-1">
             <!-- 完了チェックボタン -->
             <v-btn icon @click="toggleDoneActivityPlan(contents)">
-              <v-icon :class="(!contents.done && 'grey--text') || 'primary--text'"
-                >mdi-check-circle-outline
-              </v-icon>
+              <v-icon :class="(!contents.done && 'grey--text') || 'primary--text'">mdi-check-circle-outline </v-icon>
             </v-btn>
             <!-- カテゴリ表 -->
             <v-card-title :class="(contents.done && 'grey--text') || 'black--text'" class="pa-0"
@@ -25,7 +23,7 @@
           <v-spacer />
           <!-- 削除・編集選択リスト -->
           <v-menu transition="slide-y-transition" bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn icon v-bind="attrs" v-on="on">
                 <v-icon> mdi-dots-vertical</v-icon>
               </v-btn>
@@ -72,16 +70,13 @@
         </v-card-subtitle>
         <!-- 画像表示 -->
         <v-list-item v-if="contents.photoURL">
-          <ActivityPlansThumbnail class="mx-auto mb-3" :photoURL="contents.photoURL" />
+          <LoadingImg :src="contents.photoURL" />
         </v-list-item>
       </v-card>
     </transition-group>
     <!-- 活動計画編集ダイアログ -->
-    <LazyUpdateActivityPlanDialog
-      v-model="isOpenedUpdateActivityPlanDialog"
-      :contents="selectedItem"
-      :items="items"
-    />
+
+    <LazyUpdateActivityPlanDialog v-model="isOpenedUpdateActivityPlanDialog" :contents="selectedItem" :items="items" />
   </div>
 </template>
 
@@ -127,10 +122,7 @@ export default {
       this.selectedItem = contents
       this.isOpenedUpdateActivityPlanDialog = true
     },
-    ...mapActions('modules/activity-plans/activityPlans', [
-      'removeActivityPlan',
-      'toggleDoneActivityPlan'
-    ])
+    ...mapActions('modules/activity-plans/activityPlans', ['removeActivityPlan', 'toggleDoneActivityPlan'])
   }
 }
 </script>

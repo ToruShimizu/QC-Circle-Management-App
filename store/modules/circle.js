@@ -15,13 +15,13 @@ const mutations = {
   },
   // サークル作成
   createCircle(state, createdCircle) {
-    console.debug('data:', createdCircle)
+    console.debug('data', createdCircle)
     state.circle = createdCircle
   },
   // サークル更新
   updateCircle(state, updatedCircle) {
     console.debug('data:', updatedCircle)
-    state.circle = updateCircle
+    state.circle = updatedCircle
   },
   // メンバー追加
   addMember(state, addedMember) {
@@ -140,6 +140,7 @@ const actions = {
   // サークル更新
   async updateCircle({ getters, commit }, circle) {
     console.debug('input:', circle)
+    const id = await db.collection(`users/${getters.userUid}/circle`).doc().id
 
     const updateCircleInput = {
       id,
@@ -164,15 +165,15 @@ const actions = {
     }
   },
   // サークル画像更新
-  async updateCircleImageFile({ dispatch }, circle) {
+  async updateCircleImageFile({ dispatch, getters }, circle) {
     console.debug('input:', circle)
 
     try {
+      const id = await db.collection(`users/${getters.userUid}/circle`).doc().id
       const imageFile = circle.imageFile
-      const imageRef = await storageRef.child(`circleImages/${circle.id}/${imageFile.name}`)
+      const imageRef = await storageRef.child(`circleImages/${id}/${imageFile.name}`)
       const snapShot = await imageRef.put(imageFile)
       const photoURL = await snapShot.ref.getDownloadURL()
-
       circle.fileName = imageFile.name
       circle.photoURL = photoURL
       // サークルを更新する
@@ -254,9 +255,7 @@ const actions = {
     }
   },
   // メンバー削除
-  async removeMember({ commit, getters }, circleMember) {
-    console.debug('input:', circleMember)
-
+  async removeMember({ commit, getters }, id) {
     try {
       if (getters.userUid) {
         const snapShot = await db.collection(`users/${getters.userUid}/circle`).get()
@@ -264,10 +263,10 @@ const actions = {
         snapShot.docs.map(async doc => {
           await doc.ref
             .collection('circleMember')
-            .doc(circleMember.id)
+            .doc(id)
             .delete()
         })
-        commit('removeMember', circleMember.id)
+        commit('removeMember', id)
       }
     } catch (e) {
       alert('削除に失敗しました。もう一度やり直してください')
@@ -286,7 +285,7 @@ const actions = {
     const subCollection = await snapShot.ref.collection('circleMember').get()
 
     subCollection.docs.map(async doc => {
-      snapShot.ref
+      await snapShot.ref
         .collection('circleMember')
         .doc(doc.id)
         .delete()

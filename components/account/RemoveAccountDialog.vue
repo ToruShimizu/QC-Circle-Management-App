@@ -5,30 +5,38 @@
     </v-card-subtitle>
 
     <v-divider />
-    <v-form ref="form" lazy-validation>
+    <v-form ref="form" v-model="isValid">
       <!-- メールアドレス入力 -->
-      <v-row class="mx-2">
-        <FormUserEmail
-          :user-email.sync="removeAccountInput.email"
-          email-label="現在のメールアドレス"
-        />
-      </v-row>
-      <!-- パスワード入力 -->
-      <v-row class="mx-2">
-        <FormUserPassword
-          :show-password="isOpenedShowPassword"
-          :user-password.sync="removeAccountInput.password"
-          passwordLabel="現在のパスワード"
-          @handle-show-password="isOpenedShowPassword = !isOpenedShowPassword"
-        />
-      </v-row>
+      <div class="py-3 ">
+        <v-row class="mx-2">
+          <v-col>
+            <TextInput
+              v-model="removeAccountInput.email"
+              :rules="$rules.email"
+              icon="mdi-email-outline"
+              label="現在のメールアドレス"
+            />
+          </v-col>
+        </v-row>
+        <!-- パスワード入力 -->
+        <v-row class="mx-2">
+          <v-col>
+            <TextInput
+              v-model="removeAccountInput.password"
+              :rules="$rules.password"
+              icon="mdi-account-key-outline"
+              type="password"
+              label="現在のパスワード"
+            />
+          </v-col>
+        </v-row>
+      </div>
     </v-form>
     <template slot="buttons">
-      <AppButton color="success" outlined @click="$emit('close', false)">閉じる </AppButton>
-
-      <AppButton color="warning" :loading="isRunning" @click="runRemoveAccount"
+      <AppButton color="warning" :disabled="!isValid" :loading="isRunning" @click="runRemoveAccount"
         >削除する
       </AppButton>
+      <AppButton color="success" outlined @click="$emit('close', false)">閉じる </AppButton>
     </template>
   </AppDialog>
 </template>
@@ -54,17 +62,18 @@ export default {
         email: '',
         password: ''
       },
-      isOpenedShowPassword: false,
+      isValid: false,
       isRunning: false
     }
   },
+  watch: {
+    isOpened() {
+      this.$nextTick(() => this.$refs.form.reset())
+    }
+  },
   methods: {
-    async runRemoveAccount() {
-      if (!this.removeAccountInput.password || !this.removeAccountInput.email) {
-        this.$refs.form.validate()
-        return
-      }
-      await this.removeAccount({
+    runRemoveAccount() {
+      this.removeAccount({
         email: this.removeAccountInput.email,
         password: this.removeAccountInput.password
       })

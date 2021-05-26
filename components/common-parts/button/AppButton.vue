@@ -1,6 +1,6 @@
 <template>
   <v-btn
-    class="app-btn font-weight-bold"
+    class="app-button font-weight-bold"
     :class="{ 'white--text': !outlined, 'bg-white-btn ': outlined }"
     :outlined="outlined"
     :height="height"
@@ -20,7 +20,7 @@
 </template>
 <script>
 export default {
-  name: 'AppBtn',
+  name: 'AppButton',
 
   props: {
     height: {

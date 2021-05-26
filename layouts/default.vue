@@ -1,6 +1,6 @@
 <template>
   <v-app :style="{ background: $vuetify.theme.themes.dark.mainBackground }">
-    <Header />
+    <TheHeader />
     <transition name="page">
       <v-main>
         <nuxt />

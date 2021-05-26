@@ -1,11 +1,6 @@
 <template>
-  <AppDialog
-    :is-opened="isOpened"
-    class="update-circle-dialog"
-    title="サークル編集"
-    @close="$emit('close', false)"
-  >
-    <v-form v-model="isValid" ref="form" lazy-validation>
+  <AppDialog :is-opened="isOpened" class="update-circle-dialog" title="サークル編集" @close="$emit('close', false)">
+    <v-form ref="form" v-model="isValid">
       <!-- チーム画像表示 -->
       <v-row class="mx-2">
         <v-col cols="12" class="text-center">
@@ -19,13 +14,11 @@
       <!-- サークル名入力 -->
       <v-row class="mx-2">
         <v-col>
-          <v-text-field
+          <TextInput
             v-model="editCircleInput.name"
-            prepend-icon="mdi-card-account-details-outline"
             label="サークル名"
-            persistent-hint
-            hint="サークル名を入力してください"
             :rules="nameRules"
+            icon="mdi-card-account-details-outline"
             clearable
           />
         </v-col>
@@ -34,18 +27,14 @@
       <!-- サークル画像選択 -->
       <v-row class="mx-2">
         <v-col>
-          <InputFile :imageFile="editCircleInput.imageFile" @change-image-file="changeImageFile" />
+          <FileInput v-model="editCircleInput.imageFile" @change-image-file="changeImageFile" />
         </v-col>
       </v-row>
     </v-form>
     <!-- 保存、閉じるボタン -->
     <template slot="buttons">
-      <AppButton :disabled="isValid" :loading="isRunning" @click="runUpdateCircle"
-        >保存する
-      </AppButton>
-      <AppButton color="success" outlined :disabled="isRunning" @click="$emit('close', false)"
-        >キャンセル
-      </AppButton>
+      <AppButton :disabled="!isValid" :loading="isRunning" @click="runUpdateCircle">保存する </AppButton>
+      <AppButton color="success" outlined :disabled="isRunning" @click="$emit('close', false)">キャンセル </AppButton>
     </template>
   </AppDialog>
 </template>
@@ -77,17 +66,27 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('modules/circle', ['circlePhotoURL'])
+    ...mapGetters('modules/circle', ['circlePhotoURL', 'circleName'])
+  },
+  watch: {
+    isOpened() {
+      if (this.isOpened) {
+        this.editCircleInput.name = this.circleName
+        this.editCircleInput.photoURL = this.circlePhotoURL
+      }
+    }
   },
   methods: {
     // サークル更新
     async runUpdateCircle() {
+      this.isRunning = true
       if (this.editCircleInput.imageFile) {
         await this.updateCircleImageFile(this.editCircleInput)
       } else {
         await this.updateCircle(this.editCircleInput)
       }
       this.$emit('close', false)
+      this.isRunning = false
     },
     // 画像ファイル変換
     changeImageFile(file) {

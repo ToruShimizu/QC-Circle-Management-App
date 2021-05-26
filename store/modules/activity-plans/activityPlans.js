@@ -45,12 +45,8 @@ const mutations = {
   // コメント削除
   removeComment(state, comment) {
     const id = comment.id
-    const activityPlanIndex = state.activityPlans.findIndex(
-      contents => contents.id === comment.activityPlanId
-    )
-    const commentIndex = state.activityPlans[activityPlanIndex].comments.findIndex(
-      comment => comment.id === id
-    )
+    const activityPlanIndex = state.activityPlans.findIndex(contents => contents.id === comment.activityPlanId)
+    const commentIndex = state.activityPlans[activityPlanIndex].comments.findIndex(comment => comment.id === id)
     state.activityPlans[activityPlanIndex].comments.splice(commentIndex, 1)
   }
 }
@@ -73,7 +69,8 @@ const actions = {
     })
   },
   // 活動計画追加
-  async createActivityPlan({ getters, commit }, planContents) {
+  async createActivityPlan({ commit, getters }, planContents) {
+    console.debug('input: ', planContents)
     let id = await db.collection(`users/${getters.userUid}/activityPlans`).doc().id
     if (planContents.id) {
       id = planContents.id
@@ -159,15 +156,13 @@ const actions = {
       console.log(err)
     }
   },
-  async updatePlanContentsImageFile({ dispatch }, planContents) {
+  async updatePlanContentsImageFile({ dispatch }, { planContents, file }) {
     const id = planContents.id
-    const imageFile = planContents.imageFile
-    const imageRef = await storageRef.child(`planContentsImages/${id}/${imageFile.name}`)
-    const snapShot = await imageRef.put(imageFile)
+    const imageRef = await storageRef.child(`planContentsImages/${id}/${file.name}`)
+    const snapShot = await imageRef.put(file)
     const photoURL = await snapShot.ref.getDownloadURL()
-
+    planContents.fileName = file.name
     planContents.photoURL = photoURL
-    planContents.fileName = imageFile.name
     dispatch('updateActivityPlan', planContents)
   },
   // 活動計画削除
@@ -264,15 +259,15 @@ const actions = {
     if (getters.userUid) {
       const snapShot = await db
         .collection(`users/${getters.userUid}/activityPlans`)
-        .doc(id)
+        .doc(comment.activityPlanId)
         .get()
-      snapShot.docs.map(async doc => {
-        await doc.ref
-          .collection(`comments/${getters.userUid}/message`)
-          .doc(comment.id)
-          .delete()
-      })
-      commit('allRemoveComment', id)
+
+      await snapShot.ref
+        .collection(`comments/${getters.userUid}/message`)
+        .doc(comment.id)
+        .delete()
+
+      commit('removeComment', comment)
     }
   },
   // コメントの取得
@@ -298,12 +293,13 @@ const actions = {
       .doc(id)
       .get()
     const subCollection = await snapShot.ref.collection(`comments/${getters.userUid}/message`).get()
-    subCollection.docs.map(async doc => {
-      snapShot.ref
-        .collection(`comments/${getters.userUid}/message`)
-        .doc(doc.id)
-        .delete()
-    })
+    subCollection.docs.map(
+      async doc =>
+        await snapShot.ref
+          .collection(`comments/${getters.userUid}/message`)
+          .doc(doc.id)
+          .delete()
+    )
   }
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-navigation-drawer v-model="sideNavDrawer" app clipped color="blue-grey darken-4">
+    <v-navigation-drawer v-model="sideNavDrawer" app clipped hide-overlay color="blue-grey darken-4">
       <SideNav />
     </v-navigation-drawer>
     <v-app-bar color="#051e34" dark app clipped-left>
@@ -8,13 +8,7 @@
       <nuxt-link to="/activityPlans" class="white--text">
         <v-toolbar-title>QC活動管理</v-toolbar-title>
       </nuxt-link>
-      <v-btn
-        text
-        nuxt
-        to="/activityPlans"
-        color="indigo darken-2"
-        v-if="this.$route.path === '/circle'"
-      >
+      <v-btn v-if="$route.path === '/circle'" text nuxt to="/activityPlans" color="indigo darken-2">
         <v-icon color="white">mdi-arrow-left-bold-box-outline </v-icon>
       </v-btn>
       <v-spacer />

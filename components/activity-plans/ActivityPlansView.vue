@@ -10,10 +10,7 @@
       @open-activity-plan="openUpdateActivityPlan"
     />
     <!-- 活動計画編集ダイアログ -->
-    <LazyUpdateActivityPlanDialog
-      v-model="updateActivityPlanDialog"
-      :todo-categorys="todoCategorys"
-    />
+    <LazyUpdateActivityPlanDialog v-model="updateActivityPlanDialog" :todo-categorys="todoCategorys" />
   </div>
 </template>
 
@@ -38,24 +35,21 @@ export default {
   },
   methods: {
     // 活動計画削除ボタン
-    runRemoveActivityPlan(contents) {
+    async runRemoveActivityPlan(contents) {
       if (!confirm(contents.category + 'を削除しますか？')) return
-      this.removeActivityPlan({ id: contents.id })
+      await this.removeActivityPlan({ id: contents.id })
     },
     // 完了・未完了切り替えボタン
     toggleDoneActivityPlan(contents) {
       this.doneActivityPlan({ planContents: contents, id: contents.id })
     },
     // 活動計画編集ダイアログを開く
-    async openUpdateActivityPlan(contents) {
+    openUpdateActivityPlan(contents) {
       this.editPlanContents = Object.assign({}, contents)
       this.updateActivityPlanDialog = true
     },
 
-    ...mapActions('modules/activity-plans/activityPlans', [
-      'removeActivityPlan',
-      'doneActivityPlan'
-    ]),
+    ...mapActions('modules/activity-plans/activityPlans', ['removeActivityPlan', 'doneActivityPlan']),
     ...mapActions('modules/activity-plans/activityPlans', ['fetchComments'])
   }
 }

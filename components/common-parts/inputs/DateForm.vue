@@ -9,9 +9,11 @@
     <template v-slot:activator="{ on, attrs }">
       <v-text-field
         v-model="dateRangeText"
-        label="日付"
         prepend-inner-icon="mdi-calendar-today"
+        placeholder="日付"
         readonly
+        outlined
+        dense
         v-bind="attrs"
         v-on="on"
       ></v-text-field>
@@ -28,7 +30,11 @@ export default {
   props: {
     date: {
       type: Array,
-      default: [new Date().toISOString().substr(0, 10)]
+      default: () => [new Date().toISOString().substr(0, 10)]
+    },
+    label: {
+      type: String,
+      default: ''
     }
   },
   data() {

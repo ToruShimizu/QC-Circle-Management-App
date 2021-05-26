@@ -20,16 +20,16 @@ const actions = {
     }
   },
   // ユーザー情報の更新
-  async updateUserName({ commit }, { userName, file }) {
-    const userInfo = await firebase.auth().currentUser
+  async updateUsername({ commit }, { username }) {
+    const userInfo = await auth.currentUser
     if (userInfo.displayName === 'テストユーザー') {
       alert('テストユーザーは変更できません')
     } else {
       try {
         await userInfo.updateProfile({
-          displayName: userName
+          displayName: username
         })
-        commit('modules/user/auth/updateUserName', userName, { root: true })
+        commit('modules/user/auth/updateUsername', username, { root: true })
         commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
       } catch (err) {
         alert('ユーザー名の変更に失敗しました。もう一度やり直してください。')

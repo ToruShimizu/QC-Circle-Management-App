@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="edit-user-info">
     <v-list v-if="loginUser">
       <v-list-item>
         <v-list-item-content>
@@ -56,6 +56,7 @@
 import { mapState } from 'vuex'
 
 export default {
+  name: 'EditUserInfo',
   data() {
     return {
       isOpenedUpdateUserNameDialog: false,

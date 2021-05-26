@@ -9,8 +9,9 @@ const mutations = {
   // ログインユーザー情報の取得
   setLoginUser(state, userInfo) {
     state.loginUser = userInfo
+    console.debug('setLoginUser', state.loginUser)
   },
-  updateUserName(state, username) {
+  updateUsername(state, username) {
     state.loginUser.displayName = username
   },
   updateUserEmail(state, userEmail) {
@@ -27,8 +28,8 @@ const mutations = {
 
 const actions = {
   // ログインユーザー情報の取得
-  async setLoginUser({ commit, dispatch }, userInfo) {
-    await commit('setLoginUser', userInfo)
+  setLoginUser({ commit, dispatch }, userInfo) {
+    commit('setLoginUser', userInfo)
     dispatch('modules/activity-plans/activityPlans/fetchActivityPlans', null, { root: true })
     dispatch('modules/circle/fetchCircle', null, { root: true })
   },
@@ -76,9 +77,6 @@ const actions = {
       alert('ユーザーの作成に成功しました。このままログインします。')
       await dispatch('login', { email, password })
       commit('updateUsername', username)
-      email = null
-      password = null
-      username = null
     } catch (err) {
       alert('ユーザーの作成に失敗しました。もう一度やり直してください。')
       console.log(err)
@@ -88,7 +86,7 @@ const actions = {
 
 const getters = {
   // ユーザー名の取得
-  gettersUserName: state => (state.loginUser ? state.loginUser.displayName : ''),
+  gettersUsername: state => (state.loginUser ? state.loginUser.displayName : ''),
   // ユーザーのメールアドレスの取得
   gettersUserEmail: state => (state.loginUser ? state.loginUser.email : ''),
   // ユーザー画像の取得
