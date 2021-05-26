@@ -3,7 +3,7 @@
     <v-form ref="form" v-model="isValid">
       <!-- チーム画像表示 -->
       <v-row class="mx-2">
-        <v-col cols="12" class="text-center">
+        <v-col class="text-center">
           <v-avatar size="200px">
             <LoadingImg v-if="circlePhotoURL" :src="circlePhotoURL" width="200" />
             <v-icon v-else large>mdi-account-outline</v-icon>
@@ -13,7 +13,7 @@
 
       <!-- サークル名入力 -->
       <v-row class="mx-2">
-        <v-col cols="12">
+        <v-col>
           <TextInput
             v-model="createCircleInput.name"
             icon="mdi-card-account-details-outline"
@@ -25,8 +25,8 @@
 
       <!-- サークル画像選択 -->
       <v-row class="mx-2">
-        <v-col cols="12">
-          <FileInput v-model="createCircleInput.imageFile" @change-image-file="changeImageFile" />
+        <v-col>
+          <FileInput v-model="createCircleInput.imageFile" />
         </v-col>
       </v-row>
     </v-form>
@@ -76,17 +76,15 @@ export default {
   },
 
   methods: {
-    // 画像ファイル変換
-    changeImageFile(file) {
-      this.ircle.imageFile = file
-    },
     // サークル作成
     async runCreateCircle() {
+      this.isRunning = true
       if (this.createCircleInput.imageFile) {
-        await this.uploadCircleImageFile(this.createCircleInput.imageFile)
+        await this.uploadCircleImageFile(this.createCircleInput)
       } else {
         await this.createCircle(this.createCircleInput)
       }
+      this.isRunning = false
       this.$emit('close', false)
     },
 

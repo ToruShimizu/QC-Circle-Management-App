@@ -3,7 +3,7 @@
     <v-form ref="form" v-model="isValid">
       <!-- チーム画像表示 -->
       <v-row class="mx-2">
-        <v-col cols="12" class="text-center">
+        <v-col class="text-center">
           <v-avatar size="200px">
             <LoadingImg v-if="circlePhotoURL" :src="circlePhotoURL" width="200" />
             <v-icon v-else large>mdi-account-outline</v-icon>
@@ -27,7 +27,7 @@
       <!-- サークル画像選択 -->
       <v-row class="mx-2">
         <v-col>
-          <FileInput v-model="editCircleInput.imageFile" @change-image-file="changeImageFile" />
+          <FileInput v-model="editCircleInput.imageFile" />
         </v-col>
       </v-row>
     </v-form>
@@ -39,7 +39,7 @@
   </AppDialog>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'UpdateCircleDialog',
   model: {
@@ -56,6 +56,7 @@ export default {
     return {
       nameRules: [v => !!v || '名前は必須です。'],
       editCircleInput: {
+        id: '',
         name: '',
         imageFile: null,
         fileName: '',
@@ -66,13 +67,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('modules/circle', ['circlePhotoURL', 'circleName'])
+    ...mapState('modules/circle', ['circle']),
+    ...mapGetters('modules/circle', ['circlePhotoURL'])
   },
   watch: {
     isOpened() {
       if (this.isOpened) {
-        this.editCircleInput.name = this.circleName
-        this.editCircleInput.photoURL = this.circlePhotoURL
+        this.editCircleInput = Object.assign({}, this.circle)
       }
     }
   },
@@ -87,10 +88,6 @@ export default {
       }
       this.$emit('close', false)
       this.isRunning = false
-    },
-    // 画像ファイル変換
-    changeImageFile(file) {
-      this.circle.imageFile = file
     },
 
     ...mapActions('modules/circle', ['updateCircle', 'updateCircleImageFile'])

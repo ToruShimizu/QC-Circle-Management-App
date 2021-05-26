@@ -19,7 +19,7 @@
       </v-row>
     </v-form>
     <template slot="buttons">
-      <AppButton :disabled="!isValid" :loading="isRunning" outlined @click="runUpdateUsername">
+      <AppButton :disabled="!isValid" :loading="isRunning" @click="runUpdateUsername">
         保存する
       </AppButton>
       <AppButton :disabled="isRunning" color="success" outlined @click="$emit('close', false)">

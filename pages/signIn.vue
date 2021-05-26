@@ -40,8 +40,8 @@
       <AppButton text @click="isOpenedResetPasswordDialog = true">※パスワードを忘れた方はこちら </AppButton>
     </v-row>
     <v-card-actions class="justify-end">
-      <AppButton :disabled="!isValid" :loading="isRunningLogin" @click="login">ログイン</AppButton>
-      <AppButton outlined @click="isOpenedCreateUserDialog = true">新規作成</AppButton>
+      <AppButton :disabled="!isValid" :loading="isRunningLogin" @click="runLogin">ログイン</AppButton>
+      <AppButton :diabled="isRunningLogin" outlined @click="isOpenedCreateUserDialog = true">新規作成</AppButton>
     </v-card-actions>
     <!-- 新規ユーザー作成ダイアログ -->
     <LazyCreateUserDialog v-model="isOpenedCreateUserDialog" />
@@ -81,17 +81,15 @@ export default {
       this.isRunningTestLogin = true
     },
     // メールアドレスログイン
-    login() {
+    async runLogin() {
       // ボタンのローディングをON
       this.isRunningLogin = true
-
-      this.login({
+      await this.login({
         email: this.signInUser.email,
         password: this.signInUser.password
       })
       // ボタンのローディングをOFF
       this.isRunningLogin = false
-      this.$refs.form.reset()
     },
 
     ...mapActions('modules/auth', ['googleLogin', 'login'])

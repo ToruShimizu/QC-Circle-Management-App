@@ -36,7 +36,7 @@
       <AppButton color="warning" :disabled="!isValid" :loading="isRunning" @click="runRemoveAccount"
         >削除する
       </AppButton>
-      <AppButton color="success" outlined @click="$emit('close', false)">閉じる </AppButton>
+      <AppButton color="success" :disabled="isRunning" outlined @click="$emit('close', false)">閉じる </AppButton>
     </template>
   </AppDialog>
 </template>
@@ -68,15 +68,19 @@ export default {
   },
   watch: {
     isOpened() {
-      this.$nextTick(() => this.$refs.form.reset())
+      if (this.isOpened) {
+        this.$nextTick(() => this.$refs.form.reset())
+      }
     }
   },
   methods: {
-    runRemoveAccount() {
-      this.removeAccount({
+    async runRemoveAccount() {
+      this.isRunning = true
+      await this.removeAccount({
         email: this.removeAccountInput.email,
         password: this.removeAccountInput.password
       })
+      this.isRunning = false
       this.$emit('close', false)
     },
     ...mapActions('modules/userInfo', ['removeAccount'])

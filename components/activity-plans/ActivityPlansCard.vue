@@ -1,7 +1,7 @@
 <template>
   <div class="activity-plans-card">
     <transition-group name="card-anim">
-      <v-card :key="contents.id" class="mb-5 elevation-5">
+      <v-card :key="contents.id" class="mb-5 py-5 elevation-5">
         <v-card-actions class="pa-0">
           <v-card-title class="pa-1">
             <!-- 完了チェックボタン -->

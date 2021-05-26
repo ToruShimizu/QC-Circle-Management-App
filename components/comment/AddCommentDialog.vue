@@ -4,7 +4,7 @@
 
     <!-- コメント表示 -->
     <v-row class="mx-2">
-      <v-col cols="12">
+      <v-col>
         <div v-for="comment in planContents.comments" :key="comment.id">
           <v-card class="mx-auto my-2" width="100%" elevation="3">
             <v-card-title class="pa-0 ml-1 mt-1">

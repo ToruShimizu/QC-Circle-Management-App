@@ -8,7 +8,7 @@
     :label="label"
     dense
     outlined
-    :multiple="$attrs.multiple"
+    :multiple="multiple"
     @input="$emit('input', $event)"
   />
 </template>

@@ -84,7 +84,6 @@ export default {
     async runCreateUser() {
       // ローディングをON
       this.isRunning = true
-      console.log(this.createUserInput.name)
       await this.createUser({
         email: this.createUserInput.email,
         password: this.createUserInput.password,

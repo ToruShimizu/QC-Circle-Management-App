@@ -45,10 +45,10 @@
       </div>
     </v-form>
     <template slot="buttons">
-      <AppButton :disabled="!isValid" outlined @click="runUpdatePassword">
+      <AppButton :disabled="!isValid" :loading="isRunning" @click="runUpdatePassword">
         保存する
       </AppButton>
-      <AppButton :loading="isRunning" color="success" outlined @click="$emit('close', false)">
+      <AppButton :disabled="isRunning" color="success" outlined @click="$emit('close', false)">
         キャンセル
       </AppButton>
     </template>

@@ -97,8 +97,8 @@ const actions = {
         commit('createActivityPlan', createActivityPlanInput)
         commit('modules/commonParts/openSnackbar', null, { root: true })
       }
-    } catch (err) {
-      console.log(err)
+    } catch (e) {
+      console.error(e)
     }
   },
   async uploadPlanContentsImageFile({ dispatch, getters }, planContents) {
@@ -114,6 +114,7 @@ const actions = {
   },
   // 活動計画更新
   async updateActivityPlan({ getters, commit }, planContents) {
+    console.debug('input: ', planContents)
     const id = planContents.id
     const updateActivityPlanInput = {
       id,
@@ -137,8 +138,8 @@ const actions = {
         planContents.imageFile = null
         commit('modules/commonParts/openSnackbar', null, { root: true })
       }
-    } catch (err) {
-      console.log(err)
+    } catch (e) {
+      console.error(e)
     }
   },
   async updateCompletionDate({ commit, getters }, planContents) {
@@ -152,21 +153,22 @@ const actions = {
           .update({ completionDate })
         commit('updateCompletionDate', { completionDate, id })
       }
-    } catch (err) {
-      console.log(err)
+    } catch (e) {
+      console.error(e)
     }
   },
-  async updatePlanContentsImageFile({ dispatch }, { planContents, file }) {
+  async updatePlanContentsImageFile({ dispatch }, planContents) {
     const id = planContents.id
-    const imageRef = await storageRef.child(`planContentsImages/${id}/${file.name}`)
-    const snapShot = await imageRef.put(file)
+    const imageRef = await storageRef.child(`planContentsImages/${id}/${planContents.imageFile.name}`)
+    const snapShot = await imageRef.put(planContents.imageFile)
     const photoURL = await snapShot.ref.getDownloadURL()
-    planContents.fileName = file.name
+    planContents.fileName = planContents.imageFile.name
     planContents.photoURL = photoURL
     dispatch('updateActivityPlan', planContents)
   },
   // 活動計画削除
   async removeActivityPlan({ getters, commit, dispatch }, { id }) {
+    console.debug('input: ', id)
     const activityPlanId = id
     if (getters.userUid) {
       await db
@@ -203,21 +205,7 @@ const actions = {
     }
     commit('toggleDoneActivityPlan', planContents)
   },
-  async removePlanContentsImage({ commit, getters }, planContents) {
-    const id = planContents.id
-    const imageRef = await storageRef.child(`planContentsImages/${id}/${planContents.fileName}`)
-    try {
-      await imageRef.delete()
-      await db
-        .collection(`users/${getters.userUid}/activityPlans`)
-        .doc(id)
-        .update({ photoURL: null })
-      commit('removePhotoURL', id)
-      planContents.photoURL = null
-    } catch (err) {
-      console.log(err)
-    }
-  },
+
   // コメントの追加処理
   async addComment({ getters, commit }, { id, message }) {
     const date = new Date()

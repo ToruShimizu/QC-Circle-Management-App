@@ -3,7 +3,7 @@
     <v-form ref="form" v-model="isValid">
       <v-row class="mx-2">
         <!-- メンバー名入力フォーム -->
-        <v-col cols="12">
+        <v-col>
           <TextInput
             v-model="addMemberInput.name"
             required
@@ -17,7 +17,7 @@
       </v-row>
       <!-- 役割入力フォーム -->
       <v-row class="mx-2">
-        <v-col cols="12">
+        <v-col>
           <ComboboxInput
             v-model="addMemberInput.role"
             :items="circleRoles"
@@ -29,11 +29,12 @@
       </v-row>
       <!-- 改善担当入力フォーム -->
       <v-row class="mx-2">
-        <v-col cols="12">
+        <v-col>
           <ComboboxInput
             v-model="addMemberInput.improvementRole"
             :items="improvementRoles"
             :rules="$rules.improvementRoles"
+            multiple
             icon="mdi-briefcase-outline"
             label="改善担当"
           />
@@ -90,8 +91,10 @@ export default {
   },
   methods: {
     // メンバー登録
-    runAddMember() {
-      this.addMember(this.addMemberInput)
+    async runAddMember() {
+      this.isRunning = true
+      await this.addMember(this.addMemberInput)
+      this.isRunning = false
       this.$emit('close', false)
     },
 

@@ -77,9 +77,9 @@ const actions = {
       alert('ユーザーの作成に成功しました。このままログインします。')
       await dispatch('login', { email, password })
       commit('updateUsername', username)
-    } catch (err) {
+    } catch (e) {
       alert('ユーザーの作成に失敗しました。もう一度やり直してください。')
-      console.log(err)
+      console.error(e)
     }
   }
 }

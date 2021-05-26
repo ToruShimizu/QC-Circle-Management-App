@@ -91,10 +91,8 @@ const actions = {
   // サークル作成
   async createCircle({ getters, commit }, circle) {
     console.debug('input:', circle)
-    let id = await db.collection(`users/${getters.userUid}/circle`).doc().id
     // 画像登録後の場合はidを代入
-    if (circle.id) id = circle.id
-
+    const id = circle.id ? circle.id : await db.collection(`users/${getters.userUid}/circle`).doc().id
     const createCircleInput = {
       id,
       name: circle.name,
@@ -120,9 +118,8 @@ const actions = {
   // サークル画像更新
   async uploadCircleImageFile({ getters, dispatch }, circle) {
     console.debug('input:', circle)
-
+    const id = circle.id ? circle.id : await db.collection(`users/${getters.userUid}/circle`).doc().id
     try {
-      const id = await db.collection(`users/${getters.userUid}/circle`).doc().id
       const imageFile = circle.imageFile
       const imageRef = await storageRef.child(`circleImages/${id}/${imageFile.name}`)
       const snapShot = await imageRef.put(imageFile)
@@ -140,10 +137,8 @@ const actions = {
   // サークル更新
   async updateCircle({ getters, commit }, circle) {
     console.debug('input:', circle)
-    const id = await db.collection(`users/${getters.userUid}/circle`).doc().id
-
     const updateCircleInput = {
-      id,
+      id: circle.id,
       name: circle.name,
       fileName: circle.fileName,
       photoURL: circle.photoURL
@@ -153,7 +148,7 @@ const actions = {
       if (getters.userUid) {
         await db
           .collection(`users/${getters.userUid}/circle`)
-          .doc(getters.circleId)
+          .doc(circle.id)
           .update(updateCircleInput)
         commit('updateCircle', updateCircleInput)
         // スナックバー

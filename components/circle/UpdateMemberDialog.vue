@@ -3,7 +3,7 @@
     <v-form ref="form" v-model="isValid">
       <v-row class="mx-2">
         <!-- メンバー名入力フォーム -->
-        <v-col cols="12">
+        <v-col>
           <TextInput
             v-model="editMemberInput.name"
             required
@@ -18,11 +18,12 @@
 
       <!-- 役割入力フォーム -->
       <v-row class="mx-2">
-        <v-col cols="12">
+        <v-col>
           <ComboboxInput
             v-model="editMemberInput.role"
             :items="circleRoles"
             :rules="$rules.role"
+            multiple
             icon="mdi-briefcase-account-outline"
             label="役割"
           />
@@ -31,11 +32,12 @@
 
       <!-- 改善担当入力フォーム -->
       <v-row class="mx-2">
-        <v-col cols="12">
+        <v-col>
           <ComboboxInput
             v-model="editMemberInput.improvementRole"
             :items="improvementRoles"
             :rules="$rules.improvementRoles"
+            multiple
             icon="mdi-briefcase-outline"
             label="改善担当"
           />

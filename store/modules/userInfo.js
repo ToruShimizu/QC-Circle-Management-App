@@ -14,9 +14,9 @@ const actions = {
       // ログインユーザーの情報を更新
       commit('modules/auth/updateUserAvatar', photoURL, { root: true })
       commit('modules/commonParts/openSnackbar', null, { root: true })
-    } catch (err) {
+    } catch (e) {
       alert('画像の変更に失敗しました。もう一度やり直してください。')
-      console.log(err)
+      console.error(e)
     }
   },
   // ユーザー情報の更新
@@ -31,9 +31,9 @@ const actions = {
         })
         commit('modules/auth/updateUsername', username, { root: true })
         commit('modules/commonParts/openSnackbar', null, { root: true })
-      } catch (err) {
+      } catch (e) {
         alert('ユーザー名の変更に失敗しました。もう一度やり直してください。')
-        console.log(err)
+        console.error(e)
       }
     }
   },
@@ -47,9 +47,9 @@ const actions = {
         await userInfo.updateEmail(email)
         commit('modules/auth/updateUserEmail', email, { root: true })
         commit('modules/commonParts/openSnackbar', null, { root: true })
-      } catch (err) {
+      } catch (e) {
         alert('新しいメールアドレスの登録に失敗しました。もう一度やり直してください。')
-        console.log(err)
+        console.error(e)
       }
     }
   },
@@ -66,8 +66,8 @@ const actions = {
         await user.updatePassword(updatePassword)
         alert('パスワードの変更が完了しました。ログイン画面に戻ります。')
         dispatch('modules/auth/logout', null, { root: true })
-      } catch (err) {
-        console.log(err)
+      } catch (e) {
+        console.error(e)
       }
     }
   },
@@ -95,9 +95,9 @@ const actions = {
         await user.delete()
         alert('ユーザー情報を削除しました。ログイン画面に戻ります。')
         commit('modules/auth/deleteLoginUser', null, { root: true })
-      } catch (err) {
+      } catch (e) {
         alert('ユーザー情報の削除に失敗しました。もう一度やり直しください。')
-        console.log(err)
+        console.error(e)
       }
     }
   }
