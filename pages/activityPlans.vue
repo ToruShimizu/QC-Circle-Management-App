@@ -27,11 +27,11 @@
       <template v-if="circleName">
         <v-row justify="center" class="py-2">
           <!-- 活動計画検索 -->
-          <v-col cols="5">
+          <v-col cols="5" class="px-1">
             <SearchInput v-model="searchWord" :items="todoCategorys" clearable label="検索" />
           </v-col>
           <!-- 活動計画の並び替え -->
-          <v-col cols="5">
+          <v-col cols="5" class="px-1">
             <ComboboxInput
               v-model="selectSortActivityPlans"
               hide-icon

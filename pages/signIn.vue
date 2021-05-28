@@ -4,7 +4,7 @@
     <v-divider />
     <!-- Googleログインボタン -->
     <v-row justify="center" class="my-3">
-      <AppButton width="400" color="success" outlined @click="googleLogin">
+      <AppButton width="300" color="success" outlined @click="googleLogin">
         <img
           class="google-icon mr-4"
           src="https://madeby.google.com/static/images/google_g_logo.svg"
@@ -13,7 +13,7 @@
     </v-row>
     <!-- テストユーザーログインボタン -->
     <v-row justify="center" class="my-3">
-      <AppButton :loading="isRunningTestLogin" width="400" color="success" outlined @click="testLogin"
+      <AppButton width="300" color="success" outlined :loading="isRunningTestLogin" @click="testLogin"
         ><v-icon>mdi-account-arrow-left-outline</v-icon>テストユーザーでログイン
       </AppButton>
     </v-row>
