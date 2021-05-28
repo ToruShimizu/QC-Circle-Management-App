@@ -30,6 +30,7 @@
           <TextInput v-model="signInUser.email" :rules="$rules.email" placeholder="メールアドレス" />
         </v-col>
       </v-row>
+      <div></div>
       <v-row no-gutters class="mx-2" justify="center">
         <v-col cols="10" class="pa-0">
           <TextInput v-model="signInUser.password" :rules="$rules.password" label="パスワード" />
