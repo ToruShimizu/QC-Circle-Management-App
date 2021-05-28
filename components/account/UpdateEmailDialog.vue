@@ -1,10 +1,5 @@
 <template>
-  <AppDialog
-    :is-opened="isOpened"
-    class="update-user-email"
-    title="メールアドレス変更"
-    @close="$emit('close', false)"
-  >
+  <AppDialog :is-opened="isOpened" class="update-user-email" title="メールアドレス変更" @close="$emit('close', false)">
     <v-card-subtitle class="text-center font-italic">
       現在登録されているメールアドレス<br />
       <v-icon left>mdi-email-outline</v-icon>
@@ -12,16 +7,23 @@
     </v-card-subtitle>
 
     <v-divider />
-    <v-form v-model="isValid" ref="form" lazy-validation>
-      <v-row class="mx-2">
-        <FormUserEmail :user-email.sync="updateEmailInput" email-label="新しいメールアドレス" />
+    <v-form ref="form" v-model="isValid">
+      <v-row class="mx-2 py-5">
+        <v-col>
+          <TextInput
+            v-model="updateEmailInput"
+            :rules="$rules.email"
+            icon="mdi-email-outline"
+            label="新しいメールアドレス"
+          />
+        </v-col>
       </v-row>
     </v-form>
     <template slot="buttons">
-      <AppButton :disabled="isValid" @click="runUpdateEmail">
-        保存する
+      <AppButton :disabled="!isValid" :loading="isRunning" @click="runUpdateEmail">
+        更新する
       </AppButton>
-      <AppButton :loading="isRunning" color="success" outlined @click="$emit('close', false)">
+      <AppButton :disabled="isRunning" color="success" outlined @click="$emit('close', false)">
         キャンセル
       </AppButton>
     </template>
@@ -51,11 +53,17 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('modules/user/auth', ['gettersUserEmail'])
+    ...mapGetters('modules/auth', ['gettersUserEmail'])
+  },
+  watch: {
+    isOpened() {
+      if (this.isOpened) {
+        this.$nextTick(() => this.$refs.form.reset())
+      }
+    }
   },
   methods: {
     async runUpdateEmail() {
-      if (!this.updateEmailInput) this.$refs.form.validate()
       // ローディングをON
       this.isRunning = true
       await this.updateEmail({
@@ -65,7 +73,7 @@ export default {
       // ローディングをOFF
       this.isRunning = false
     },
-    ...mapActions('modules/user/userInfo', ['updateEmail'])
+    ...mapActions('modules/userInfo', ['updateEmail'])
   }
 }
 </script>

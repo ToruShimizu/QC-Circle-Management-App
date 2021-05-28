@@ -1,15 +1,10 @@
 <template>
-  <AppDialog
-    :is-opened="isOpened"
-    class="add-comment-dialog"
-    @close="$emit('close', false)"
-    title="コメント"
-  >
+  <AppDialog title="コメント" :is-opened="isOpened" class="add-comment-dialog" @close="$emit('close', false)">
     <v-divider />
 
     <!-- コメント表示 -->
     <v-row class="mx-2">
-      <v-col cols="12">
+      <v-col>
         <div v-for="comment in planContents.comments" :key="comment.id">
           <v-card class="mx-auto my-2" width="100%" elevation="3">
             <v-card-title class="pa-0 ml-1 mt-1">
@@ -18,19 +13,14 @@
               <span class="text-subtitle-2 font-weight-light ml-2">{{ comment.created }}</span>
             </v-card-title>
             <!-- コメント -->
-            <v-card-title class="text-body-1 font-weight-bold  mt-2">
-              "{{ comment.message }}"
-            </v-card-title>
+            <v-card-title class="text-body-1 font-weight-bold  mt-2"> "{{ comment.message }}" </v-card-title>
             <v-card-actions class="py-0">
               <!-- ユーザー画像 -->
               <v-avatar max-width="50" max-height="50">
                 <v-img v-if="photoURL" :src="photoURL" :lazy-src="photoURL">
-                  <template v-slot:placeholder>
+                  <template #placeholder>
                     <v-row class="ma-0" align="center" justify="center">
-                      <v-progress-circular
-                        indeterminate
-                        color="grey lighten-5"
-                      ></v-progress-circular>
+                      <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
                     </v-row>
                   </template>
                 </v-img>
@@ -38,7 +28,7 @@
                 <v-icon v-else>mdi-account-outline</v-icon>
               </v-avatar>
               <!-- ユーザーネーム -->
-              <span>{{ gettersUserName }}</span> <v-spacer />
+              <span>{{ gettersUsername }}</span> <v-spacer />
               <v-btn icon @click="runRemoveComment(comment)">
                 <v-icon>mdi-delete-outline</v-icon>
               </v-btn>
@@ -49,13 +39,12 @@
     </v-row>
     <template slot="buttons">
       <!-- コメント入力 -->
-      <v-text-field
-        v-model="message"
-        prepend-inner-icon="mdi-message-text-outline"
-        label="コメントを追加する"
-        clearable
-      />
-      <AppButton class="ml-2" outlined @click="runAddComment">追加する </AppButton>
+      <v-col cols="9">
+        <TextInput v-model="message" icon="mdi-message-text-outline" label="コメントを追加する" />
+      </v-col>
+      <v-col cols="3">
+        <AppButton class="ml-3 mb-6" :disabled="!message" @click="runAddComment">追加する </AppButton>
+      </v-col>
     </template>
   </AppDialog>
 </template>
@@ -85,7 +74,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('modules/user/auth', ['gettersUserName', 'photoURL'])
+    ...mapGetters('modules/auth', ['gettersUserName', 'photoURL'])
+  },
+  watch: {
+    isOpened() {
+      if (!this.isOpened) {
+        this.message = ''
+      }
+    }
   },
   methods: {
     // コメント追加
@@ -101,7 +97,7 @@ export default {
       if (!confirm(comment.message + 'を削除しますか?')) return
       this.removeComment(comment)
     },
-    ...mapActions('modules/activity-plans/activityPlans', ['addComment', 'removeComment'])
+    ...mapActions('modules/activityPlans', ['addComment', 'removeComment'])
   }
 }
 </script>

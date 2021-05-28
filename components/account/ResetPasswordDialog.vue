@@ -11,21 +11,23 @@
     </v-card-subtitle>
 
     <v-divider />
-    <v-form ref="form" lazy-validation>
-      <v-row class="mx-2">
-        <FormUserEmail
-          :user-email.sync="resetUserPasswordInput.email"
-          email-label="現在のメールアドレス"
-        />
+    <v-form ref="form" v-model="isValid">
+      <v-row class="mx-2 py-5">
+        <v-col>
+          <TextInput
+            v-model="resetUserPasswordInput.email"
+            :rules="$rules.email"
+            icon="mdi-email-outline"
+            label="現在のメールアドレス"
+          />
+        </v-col>
       </v-row>
     </v-form>
     <template slot="buttons">
-      <AppButton :loading="isRunning" :disabled="isValid" color="accent" @click="runResetPassword"
-        >保存する
+      <AppButton :loading="isRunning" :disabled="!isValid" color="accent" @click="runResetPassword"
+        >送信する
       </AppButton>
-      <AppButton :disabled="isRunning" outlined @click="$emit('close', false)"
-        >キャンセル
-      </AppButton>
+      <AppButton :disabled="isRunning" outlined @click="$emit('close', false)">キャンセル </AppButton>
     </template>
   </AppDialog>
 </template>
@@ -54,27 +56,30 @@ export default {
       isValid: false
     }
   },
+  watch: {
+    isOpened() {
+      if (this.isOpened) {
+        this.$nextTick(() => this.$refs.form.reset())
+      }
+    }
+  },
   methods: {
     // パスワードリセット実行
     async runResetPassword() {
       if (this.resetUserPasswordInput.email === 'test@example.com') {
         // ローディングをON
-        isRunning = true
+        this.isRunning = true
         alert('テストユーザーはパスワードを再設定することはできません')
-        return
-      } else if (!this.resetUserPasswordInput.email) {
-        this.$refs.form.validate()
         return
       }
       await this.resetPassword({
         email: this.resetUserPasswordInput.email
       })
       this.$emit('close', false)
-
       // ローディングをOFF
-      isRunning = false
+      this.isRunning = false
     },
-    ...mapActions('modules/user/userInfo', ['resetPassword'])
+    ...mapActions('modules/userInfo', ['resetPassword'])
   }
 }
 </script>

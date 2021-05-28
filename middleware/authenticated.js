@@ -1,9 +1,9 @@
-import { auth } from '../plugins/firebase'
+import { auth } from '~/plugins/firebase'
 
-export default function ({ store, redirect }) {
-  if (store.state.modules.user.auth.loginUser !== null) return
+export default function({ store, redirect }) {
+  if (store.state.modules.auth.loginUser !== null) return
 
-  auth.onAuthStateChanged((user) => {
+  auth.onAuthStateChanged(user => {
     if (user) {
       const userInfo = {
         displayName: user.displayName,
@@ -12,7 +12,7 @@ export default function ({ store, redirect }) {
         uid: user.uid
       }
       // ログインユーザーの情報をstateに入れる
-      store.dispatch('modules/user/auth/setLoginUser', userInfo)
+      store.dispatch('modules/auth/setLoginUser', userInfo)
     } else {
       return redirect('/signIn')
     }

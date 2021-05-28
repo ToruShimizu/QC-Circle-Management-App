@@ -12,28 +12,28 @@ const actions = {
         photoURL
       })
       // ログインユーザーの情報を更新
-      commit('modules/user/auth/updateUserAvatar', photoURL, { root: true })
-      commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
-    } catch (err) {
+      commit('modules/auth/updateUserAvatar', photoURL, { root: true })
+      commit('modules/commonParts/openSnackbar', null, { root: true })
+    } catch (e) {
       alert('画像の変更に失敗しました。もう一度やり直してください。')
-      console.log(err)
+      console.error(e)
     }
   },
   // ユーザー情報の更新
-  async updateUserName({ commit }, { userName, file }) {
-    const userInfo = await firebase.auth().currentUser
+  async updateUsername({ commit }, { username }) {
+    const userInfo = await auth.currentUser
     if (userInfo.displayName === 'テストユーザー') {
       alert('テストユーザーは変更できません')
     } else {
       try {
         await userInfo.updateProfile({
-          displayName: userName
+          displayName: username
         })
-        commit('modules/user/auth/updateUserName', userName, { root: true })
-        commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
-      } catch (err) {
+        commit('modules/auth/updateUsername', username, { root: true })
+        commit('modules/commonParts/openSnackbar', null, { root: true })
+      } catch (e) {
         alert('ユーザー名の変更に失敗しました。もう一度やり直してください。')
-        console.log(err)
+        console.error(e)
       }
     }
   },
@@ -45,11 +45,11 @@ const actions = {
     } else {
       try {
         await userInfo.updateEmail(email)
-        commit('modules/user/auth/updateUserEmail', email, { root: true })
-        commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
-      } catch (err) {
+        commit('modules/auth/updateUserEmail', email, { root: true })
+        commit('modules/commonParts/openSnackbar', null, { root: true })
+      } catch (e) {
         alert('新しいメールアドレスの登録に失敗しました。もう一度やり直してください。')
-        console.log(err)
+        console.error(e)
       }
     }
   },
@@ -65,9 +65,9 @@ const actions = {
         await user.reauthenticateWithCredential(credential)
         await user.updatePassword(updatePassword)
         alert('パスワードの変更が完了しました。ログイン画面に戻ります。')
-        dispatch('modules/user/auth/logout', null, { root: true })
-      } catch (err) {
-        console.log(err)
+        dispatch('modules/auth/logout', null, { root: true })
+      } catch (e) {
+        console.error(e)
       }
     }
   },
@@ -94,10 +94,10 @@ const actions = {
         await user.reauthenticateWithCredential(credential)
         await user.delete()
         alert('ユーザー情報を削除しました。ログイン画面に戻ります。')
-        commit('modules/user/auth/deleteLoginUser', null, { root: true })
-      } catch (err) {
+        commit('modules/auth/deleteLoginUser', null, { root: true })
+      } catch (e) {
         alert('ユーザー情報の削除に失敗しました。もう一度やり直しください。')
-        console.log(err)
+        console.error(e)
       }
     }
   }

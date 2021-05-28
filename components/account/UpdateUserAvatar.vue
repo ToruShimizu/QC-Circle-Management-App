@@ -28,7 +28,7 @@ export default {
     changeUserImageFile() {
       this.uploadUserImageFile(this.userImageFile)
     },
-    ...mapActions('modules/user/userInfo', ['uploadUserImageFile'])
+    ...mapActions('modules/userInfo', ['uploadUserImageFile'])
   }
 }
 </script>

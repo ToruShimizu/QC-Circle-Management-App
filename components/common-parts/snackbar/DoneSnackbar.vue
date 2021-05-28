@@ -1,5 +1,5 @@
 <template>
-  <v-snackbar v-model="snackbar" color="grey darken-3" 　:top="true">
+  <v-snackbar v-model="snackbar" color="grey darken-3" left>
     <div class="text-center">
       <v-icon color="cyan accent-2">mdi-check-circle </v-icon>
       <span class="font-italic white--text">{{ title }}</span>
@@ -10,6 +10,15 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 export default {
+  name: 'DoneSnackbar',
+  data() {
+    return {
+      title: 'successful!'
+    }
+  },
+  computed: {
+    ...mapState('modules/commonParts', ['snackbar'])
+  },
   watch: {
     snackbar() {
       setTimeout(() => {
@@ -17,16 +26,8 @@ export default {
       }, 2000)
     }
   },
-  data() {
-    return {
-      title: 'successful!'
-    }
-  },
-  computed: {
-    ...mapState('modules/common-parts/commonParts', ['snackbar'])
-  },
   methods: {
-    ...mapMutations('modules/common-parts/commonParts', ['closeSnackbar'])
+    ...mapMutations('modules/commonParts', ['closeSnackbar'])
   }
 }
 </script>

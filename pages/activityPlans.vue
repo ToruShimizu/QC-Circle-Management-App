@@ -1,50 +1,44 @@
 <template>
-  <v-container style="max-width: 500px" class="mb-5 py-5">
+  <v-container id="pages-activity-plans" class="mb-5 py-5">
     <v-row class="justify-center">
       <!-- サークル作成ダイアログ（チームが作成されていない時に表示） -->
       <template v-if="!circleName">
         <LazyCreateCircleDialog v-model="isOpenedCreateCircleDialog" />
-        <AppButton width="200" @click="isOpenedCreateCircleDialog = true"
-          >サークル新規作成
-        </AppButton>
+        <AppButton width="200" @click="isOpenedCreateCircleDialog = true">サークル新規作成 </AppButton>
       </template>
 
       <!-- サークルが作成されている場合 -->
       <template v-else>
-        <AppButton class="mx-2" width="150" color="teal lighten-1" to="/circle" nuxt
-          >サークル編集
-        </AppButton>
+        <AppButton class="mx-2" width="150" color="teal lighten-1" to="/circle" nuxt>サークル編集 </AppButton>
 
         <!-- 活動計画作成ダイアログを開くボタン -->
-        <AppButton class="mx-2" width="150" @click="isOpenedCreateActivityPlanDialog = true"
-          >活動計画作成
-        </AppButton>
+        <AppButton class="mx-2" width="150" @click="isOpenedCreateActivityPlanDialog = true">活動計画作成 </AppButton>
       </template>
     </v-row>
     <!-- 活動計画作成ダイアログ -->
-    <LazyCreateActivityPlanDialog
-      v-model="isOpenedCreateActivityPlanDialog"
-      :items="todoCategorys"
-    />
+    <LazyCreateActivityPlanDialog v-model="isOpenedCreateActivityPlanDialog" :items="todoCategorys" />
     <v-divider class="mt-4" />
     <v-card class="mb-5">
       <!-- 完了状態に応じた絞り込み -->
-      <FilteredActivityPlans :selected-activity-plans-filter.sync="selectActivityPlansFilter" />
+      <FilteredActivityPlans v-model="selectActivityPlansFilter" />
       <v-divider />
 
       <!-- チームが作成されている時に表示 -->
       <template v-if="circleName">
-        <v-row>
+        <v-row justify="center" class="py-2">
           <!-- 活動計画検索 -->
-          <SearchActivityPlans
-            :searched-category-keyword.sync="searchCategoryKeyword"
-            :todo-categorys="todoCategorys"
-          />
+          <v-col cols="5" class="px-1">
+            <SearchInput v-model="searchWord" :items="todoCategorys" clearable label="検索" />
+          </v-col>
           <!-- 活動計画の並び替え -->
-          <SortByActivityPlans
-            :selected-sort-activity-plans.sync="selectSortActivityPlans"
-            :sort-activity-plans-states="sortActivityPlansStates"
-          />
+          <v-col cols="5" class="px-1">
+            <ComboboxInput
+              v-model="selectSortActivityPlans"
+              hide-icon
+              :items="sortActivityPlansStates"
+              label="並べ替え"
+            />
+          </v-col>
         </v-row>
       </template>
 
@@ -57,11 +51,8 @@
         </v-row>
       </template>
       <!-- ページネーション -->
-      <ActivityPlansPagination
-        :activity-plans-page.sync="activityPlansPage"
-        @change-activity-plans-page="changeActivityPlansPage"
-        :activity-plans-page-length="activityPlansPageLength"
-      />
+      <v-pagination v-model="activityPlansPage" :length="activityPlansPageLength" @input="changeActivityPlansPage" />
+
       <!-- 活動計画一覧表示 -->
       <ActivityPlansCard
         v-for="contents in displayActivityPlans"
@@ -103,7 +94,7 @@ export default {
         '今後の進め方'
       ],
       selectActivityPlansFilter: 'all',
-      searchCategoryKeyword: '',
+      searchWord: '',
       selectSortActivityPlans: [],
       sortActivityPlansStates: ['カテゴリ順', '日付降順↓', '日付昇順↑'],
       activityPlansPage: 1,
@@ -112,14 +103,7 @@ export default {
       displayActivityPlans: []
     }
   },
-  mounted() {
-    this.activityPlansPagination()
-  },
-  watch: {
-    activityPlansFiltered() {
-      this.activityPlansPagination()
-    }
-  },
+
   // 完了状態の絞り込み
   computed: {
     activityPlansFiltered() {
@@ -146,12 +130,12 @@ export default {
     // 活動計画の検索
     searchActivityPlans() {
       const activityPlans = this.sortByActivityPlans
-      if (this.searchCategoryKeyword === null) {
+      if (this.searchWord === null) {
         return this.sortByActivityPlans
       }
 
       return activityPlans.filter(activityPlan => {
-        return activityPlan.category.includes(this.searchCategoryKeyword.toUpperCase())
+        return activityPlan.category.includes(this.searchWord.toUpperCase())
       })
     },
 
@@ -177,25 +161,23 @@ export default {
       }
       return returnvalue
     },
-    ...mapGetters('modules/activity-plans/activityPlans', [
-      'sortByCategory',
-      'sortByAscDate',
-      'sortByDescDate'
-    ]),
-    ...mapGetters('modules/user/auth', ['photoURL']),
+    ...mapGetters('modules/activityPlans', ['sortByCategory', 'sortByAscDate', 'sortByDescDate']),
+    ...mapGetters('modules/auth', ['photoURL']),
     ...mapGetters('modules/circle', ['circleName']),
-    ...mapState('modules/activity-plans/activityPlans', ['activityPlans']),
+    ...mapState('modules/activityPlans', ['activityPlans']),
     ...mapState('modules/circle', ['circle'])
+  },
+  watch: {
+    activityPlansFiltered() {
+      this.activityPlansPagination()
+    }
   },
   methods: {
     // ページ番号のボタンが押された時にページを切り替える
     changeActivityPlansPage(pageNumber) {
       const activityPlans = this.activityPlansFiltered
       const pageSize = this.activityPlansPageSize
-      this.displayActivityPlans = activityPlans.slice(
-        pageSize * (pageNumber - 1),
-        pageSize * pageNumber
-      )
+      this.displayActivityPlans = activityPlans.slice(pageSize * (pageNumber - 1), pageSize * pageNumber)
     },
 
     // ページネーション機能
@@ -211,3 +193,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+#pages-activity-plans {
+  max-width: 600px;
+}
+</style>

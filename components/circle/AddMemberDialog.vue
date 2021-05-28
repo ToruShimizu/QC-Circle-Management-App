@@ -1,53 +1,49 @@
 <template>
-  <AppDialog
-    :is-opened="isOpened"
-    class="add-member-dialog"
-    title="メンバー追加"
-    @close="$emit('close', false)"
-  >
-    <v-form v-model="isValid" ref="form" lazy-validation>
+  <AppDialog :is-opened="isOpened" class="add-member-dialog" title="メンバー追加" @close="$emit('close', false)">
+    <v-form ref="form" v-model="isValid">
       <v-row class="mx-2">
         <!-- メンバー名入力フォーム -->
-        <v-col cols="12">
-          <v-text-field
+        <v-col>
+          <TextInput
             v-model="addMemberInput.name"
             required
             label="名前"
             clearable
             dense
-            prepend-inner-icon="mdi-card-account-details-outline"
-            :rules="nameRules"
+            icon="mdi-card-account-details-outline"
+            :rules="$rules.name"
           />
         </v-col>
       </v-row>
       <!-- 役割入力フォーム -->
-      <v-col cols="12">
-        <RoleComboBox
-          :circle-member="addMemberInput"
-          :items="circleRoles"
-          :role.sync="addMemberInput.role"
-          label="役割"
-        />
-      </v-col>
+      <v-row class="mx-2">
+        <v-col>
+          <ComboboxInput
+            v-model="addMemberInput.role"
+            :items="circleRoles"
+            :rules="$rules.role"
+            icon="mdi-briefcase-account-outline"
+            label="役割"
+          />
+        </v-col>
+      </v-row>
       <!-- 改善担当入力フォーム -->
       <v-row class="mx-2">
-        <v-col cols="12">
-          <ImprovementRoleComboBox
-            :circle-member="addMemberInput"
+        <v-col>
+          <ComboboxInput
+            v-model="addMemberInput.improvementRole"
             :items="improvementRoles"
-            :improvement-role.sync="addMemberInput.improvementRole"
+            :rules="$rules.improvementRoles"
+            multiple
+            icon="mdi-briefcase-outline"
             label="改善担当"
           />
         </v-col>
       </v-row>
     </v-form>
     <template slot="buttons">
-      <AppButton :loading="isRunning" :disabled="isValid" @click="runAddMember"
-        >保存する
-      </AppButton>
-      <AppButton :disabled="isRunning" color="success" outlined @click="$emit('close', false)"
-        >キャンセル
-      </AppButton>
+      <AppButton :loading="isRunning" :disabled="!isValid" @click="runAddMember">保存する </AppButton>
+      <AppButton :disabled="isRunning" color="success" outlined @click="$emit('close', false)">キャンセル </AppButton>
     </template>
     <v-divider />
   </AppDialog>
@@ -86,10 +82,19 @@ export default {
     isRunning: false,
     isValid: false
   }),
+  watch: {
+    isOpened() {
+      if (this.isOpened) {
+        this.$nextTick(() => this.$refs.form.reset())
+      }
+    }
+  },
   methods: {
     // メンバー登録
-    runAddMember() {
-      this.addMember(this.addMemberInput)
+    async runAddMember() {
+      this.isRunning = true
+      await this.addMember(this.addMemberInput)
+      this.isRunning = false
       this.$emit('close', false)
     },
 

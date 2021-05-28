@@ -1,15 +1,13 @@
 <template>
   <div id="pages-circle" class="my-6">
     <v-row class="justify-center mb-5">
-      <template>
-        <v-avatar size="70px">
-          <!-- チーム画像 -->
-          <template v-if="circlePhotoURL">
-            <LoadingImg v-if="circlePhotoURL" :src="circlePhotoURL" width="70" height="70" />
-          </template>
-          <v-icon v-else class="blue--grey darken-1">mdi-account-outline</v-icon>
-        </v-avatar>
-      </template>
+      <v-avatar size="70px">
+        <!-- チーム画像 -->
+        <template v-if="circlePhotoURL">
+          <LoadingImg v-if="circlePhotoURL" :src="circlePhotoURL" width="70" height="70" />
+        </template>
+        <v-icon v-else class="blue--grey darken-1">mdi-account-outline</v-icon>
+      </v-avatar>
       <h2 class="blue--grey--text darken-1 font-italic mt-3 ml-2">{{ circleName }}</h2>
       <!-- チーム編集・削除選択リスト -->
       <EditCircleList class="mt-3" />
@@ -24,7 +22,7 @@
         sort-by="名前"
         class="elevation-1"
       >
-        <template v-slot:top>
+        <template #top>
           <v-toolbar flat dense>
             <v-spacer />
             <v-text-field
@@ -35,26 +33,25 @@
               single-line
               hide-details
             />
-            <v-divider class="mx-4" inset vertical />
             <AppButton @click="isOpenedAddMemberDialog = true">メンバー追加 </AppButton>
 
             <v-spacer />
           </v-toolbar>
         </template>
 
-        <template v-slot:[`item.actions`]="{ item }">
+        <template #[`item.actions`]="{ item }">
           <v-icon class="pr-1" color="success" @click="openUpdateMember(item)">mdi-pencil</v-icon>
           <v-icon class="pl-1" color="success" @click="runRemoveMember(item)">mdi-delete</v-icon>
         </template>
       </v-data-table>
       <!-- メンバー追加ダイアログ -->
-      <RegistrationMember
+      <LazyAddMemberDialog
         v-model="isOpenedAddMemberDialog"
         :circle-roles="circleRoles"
         :improvement-roles="improvementRoles"
       />
       <!-- メンバー編集ダイアログ -->
-      <UpdateMember
+      <LazyUpdateMemberDialog
         v-model="isOpenedUpdateMemberDialog"
         :edit-member="editMember"
         :circle-roles="circleRoles"

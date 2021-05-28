@@ -1,13 +1,11 @@
 <template>
   <!-- 完了、未完了のタブ切り替え -->
   <v-tabs>
-    <v-tab @click="selectedActivityPlansFilter = 'all'">全て:{{ activityPlans.length }}</v-tab>
+    <v-tab @click="$emit('update', 'all')">全て:{{ activityPlans.length }}</v-tab>
     <v-divider vertical />
-    <v-tab @click="selectedActivityPlansFilter = 'active'"
-      >実施前:{{ remainingActivityPlansLength }}</v-tab
-    >
+    <v-tab @click="$emit('update', 'active')">実施前:{{ remainingActivityPlansLength }}</v-tab>
     <v-divider vertical />
-    <v-tab @click="selectedActivityPlansFilter = 'done'">
+    <v-tab @click="$emit('update', 'done')">
       実施済: {{ completedActivityPlansLength }}/{{ activityPlans.length }}
       <!-- 完了率の表示 -->
       <v-progress-circular
@@ -27,28 +25,23 @@
 import { mapState, mapGetters } from 'vuex'
 
 export default {
+  model: {
+    props: 'value',
+    event: 'update'
+  },
   props: {
     selectActivityPlansFilter: {
       type: String,
-      required: false,
       default: 'all'
     }
   },
   computed: {
-    selectedActivityPlansFilter: {
-      get() {
-        return this.selectActivityPlansFilter
-      },
-      set(selectedActivityPlansFilter) {
-        this.$emit('update:selected-activity-plans-filter', selectedActivityPlansFilter)
-      }
-    },
-    ...mapGetters('modules/activity-plans/activityPlans', [
+    ...mapGetters('modules/activityPlans', [
       'completedActivityPlansLength',
       'remainingActivityPlansLength',
       'completionRateOfActivityPlans'
     ]),
-    ...mapState('modules/activity-plans/activityPlans', ['activityPlans'])
+    ...mapState('modules/activityPlans', ['activityPlans'])
   }
 }
 </script>

@@ -9,7 +9,7 @@
       class="elevation-1"
       style="width: 80%"
     >
-      <template v-slot:top>
+      <template #top>
         <v-toolbar flat dense>
           <v-spacer />
           <v-text-field
@@ -27,7 +27,7 @@
         </v-toolbar>
       </template>
 
-      <template v-slot:[`item.actions`]="{ item }">
+      <template #[`item.actions`]="{ item }">
         <v-icon class="pr-1" color="success" @click="openUpdateMember(item)">mdi-pencil</v-icon>
         <v-icon class="pl-1" color="success" @click="runRemoveMember(item)">mdi-delete</v-icon>
       </template>
@@ -48,7 +48,10 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
-
+const DEFAULT_PAGE_OPTIONS = {
+  page: 1,
+  itemsPerPage: 5
+}
 export default {
   props: {
     circleRoles: {
@@ -85,13 +88,11 @@ export default {
   },
   methods: {
     // メンバー削除
-    runRemoveMember(item) {
+    async runRemoveMember(item) {
       if (!confirm(item.name + 'を削除しますか？')) return
-      this.removeMember(item)
+      await this.removeMember(item)
     },
-    openRegistrationMember() {
-      this.$emit('open-registration-member')
-    },
+
     // メンバー編集ダイアログを開く
     openUpdateMember(item) {
       this.editMember = Object.assign({}, item)

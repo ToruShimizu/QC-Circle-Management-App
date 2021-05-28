@@ -7,9 +7,9 @@
     class="grey lighten-2"
     :max-width="width"
     :max-height="height"
-    @click="removeImageFile"
+    @click="$emit('remove')"
   >
-    <template v-slot:placeholder>
+    <template #placeholder>
       <v-row class="fill-height ma-0" align="center" justify="center">
         <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
       </v-row>
@@ -31,14 +31,6 @@ export default {
     height: {
       type: String,
       default: '200'
-    }
-  },
-  methods: {
-    removeImage() {
-      this.$emit('remove-image')
-    },
-    removeImageFile() {
-      this.$emit('remove-image-file')
     }
   }
 }

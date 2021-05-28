@@ -45,12 +45,8 @@ const mutations = {
   // コメント削除
   removeComment(state, comment) {
     const id = comment.id
-    const activityPlanIndex = state.activityPlans.findIndex(
-      contents => contents.id === comment.activityPlanId
-    )
-    const commentIndex = state.activityPlans[activityPlanIndex].comments.findIndex(
-      comment => comment.id === id
-    )
+    const activityPlanIndex = state.activityPlans.findIndex(contents => contents.id === comment.activityPlanId)
+    const commentIndex = state.activityPlans[activityPlanIndex].comments.findIndex(comment => comment.id === id)
     state.activityPlans[activityPlanIndex].comments.splice(commentIndex, 1)
   }
 }
@@ -73,7 +69,8 @@ const actions = {
     })
   },
   // 活動計画追加
-  async createActivityPlan({ getters, commit }, planContents) {
+  async createActivityPlan({ commit, getters }, planContents) {
+    console.debug('input: ', planContents)
     let id = await db.collection(`users/${getters.userUid}/activityPlans`).doc().id
     if (planContents.id) {
       id = planContents.id
@@ -98,10 +95,10 @@ const actions = {
           .doc(id)
           .set(createActivityPlanInput)
         commit('createActivityPlan', createActivityPlanInput)
-        commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+        commit('modules/commonParts/openSnackbar', null, { root: true })
       }
-    } catch (err) {
-      console.log(err)
+    } catch (e) {
+      console.error(e)
     }
   },
   async uploadPlanContentsImageFile({ dispatch, getters }, planContents) {
@@ -117,6 +114,7 @@ const actions = {
   },
   // 活動計画更新
   async updateActivityPlan({ getters, commit }, planContents) {
+    console.debug('input: ', planContents)
     const id = planContents.id
     const updateActivityPlanInput = {
       id,
@@ -138,10 +136,10 @@ const actions = {
           .update(updateActivityPlanInput)
         commit('updateActivityPlan', updateActivityPlanInput)
         planContents.imageFile = null
-        commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+        commit('modules/commonParts/openSnackbar', null, { root: true })
       }
-    } catch (err) {
-      console.log(err)
+    } catch (e) {
+      console.error(e)
     }
   },
   async updateCompletionDate({ commit, getters }, planContents) {
@@ -155,23 +153,22 @@ const actions = {
           .update({ completionDate })
         commit('updateCompletionDate', { completionDate, id })
       }
-    } catch (err) {
-      console.log(err)
+    } catch (e) {
+      console.error(e)
     }
   },
   async updatePlanContentsImageFile({ dispatch }, planContents) {
     const id = planContents.id
-    const imageFile = planContents.imageFile
-    const imageRef = await storageRef.child(`planContentsImages/${id}/${imageFile.name}`)
-    const snapShot = await imageRef.put(imageFile)
+    const imageRef = await storageRef.child(`planContentsImages/${id}/${planContents.imageFile.name}`)
+    const snapShot = await imageRef.put(planContents.imageFile)
     const photoURL = await snapShot.ref.getDownloadURL()
-
+    planContents.fileName = planContents.imageFile.name
     planContents.photoURL = photoURL
-    planContents.fileName = imageFile.name
     dispatch('updateActivityPlan', planContents)
   },
   // 活動計画削除
   async removeActivityPlan({ getters, commit, dispatch }, { id }) {
+    console.debug('input: ', id)
     const activityPlanId = id
     if (getters.userUid) {
       await db
@@ -208,21 +205,7 @@ const actions = {
     }
     commit('toggleDoneActivityPlan', planContents)
   },
-  async removePlanContentsImage({ commit, getters }, planContents) {
-    const id = planContents.id
-    const imageRef = await storageRef.child(`planContentsImages/${id}/${planContents.fileName}`)
-    try {
-      await imageRef.delete()
-      await db
-        .collection(`users/${getters.userUid}/activityPlans`)
-        .doc(id)
-        .update({ photoURL: null })
-      commit('removePhotoURL', id)
-      planContents.photoURL = null
-    } catch (err) {
-      console.log(err)
-    }
-  },
+
   // コメントの追加処理
   async addComment({ getters, commit }, { id, message }) {
     const date = new Date()
@@ -264,15 +247,15 @@ const actions = {
     if (getters.userUid) {
       const snapShot = await db
         .collection(`users/${getters.userUid}/activityPlans`)
-        .doc(id)
+        .doc(comment.activityPlanId)
         .get()
-      snapShot.docs.map(async doc => {
-        await doc.ref
-          .collection(`comments/${getters.userUid}/message`)
-          .doc(comment.id)
-          .delete()
-      })
-      commit('allRemoveComment', id)
+
+      await snapShot.ref
+        .collection(`comments/${getters.userUid}/message`)
+        .doc(comment.id)
+        .delete()
+
+      commit('removeComment', comment)
     }
   },
   // コメントの取得
@@ -298,19 +281,20 @@ const actions = {
       .doc(id)
       .get()
     const subCollection = await snapShot.ref.collection(`comments/${getters.userUid}/message`).get()
-    subCollection.docs.map(async doc => {
-      snapShot.ref
-        .collection(`comments/${getters.userUid}/message`)
-        .doc(doc.id)
-        .delete()
-    })
+    subCollection.docs.map(
+      async doc =>
+        await snapShot.ref
+          .collection(`comments/${getters.userUid}/message`)
+          .doc(doc.id)
+          .delete()
+    )
   }
 }
 
 const getters = {
   // uidの取得
   userUid: (state, getters, rootState, rootGetters) => {
-    return rootGetters['modules/user/auth/uid']
+    return rootGetters['modules/auth/uid']
   },
 
   // 活動計画総数のカウント

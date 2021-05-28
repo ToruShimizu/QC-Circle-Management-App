@@ -1,16 +1,13 @@
 const state = () => ({
-  snackbar: false,
+  snackbar: false
 })
 const mutations = {
   openSnackbar(state) {
     state.snackbar = true
-
   },
   closeSnackbar(state) {
     state.snackbar = false
   }
-
-
 }
 
 export default {

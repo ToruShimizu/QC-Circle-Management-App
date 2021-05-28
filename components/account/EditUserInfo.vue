@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="edit-user-info">
     <v-list v-if="loginUser">
       <v-list-item>
         <v-list-item-content>
@@ -56,6 +56,7 @@
 import { mapState } from 'vuex'
 
 export default {
+  name: 'EditUserInfo',
   data() {
     return {
       isOpenedUpdateUserNameDialog: false,
@@ -65,7 +66,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('modules/user/auth', ['loginUser'])
+    ...mapState('modules/auth', ['loginUser'])
   },
   methods: {
     // 画像選択画面を開く

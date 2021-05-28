@@ -4,7 +4,7 @@
     <v-divider />
     <!-- Googleログインボタン -->
     <v-row justify="center" class="my-3">
-      <AppButton width="400" color="success" outlined @click="googleLogin">
+      <AppButton width="300" color="success" outlined @click="googleLogin">
         <img
           class="google-icon mr-4"
           src="https://madeby.google.com/static/images/google_g_logo.svg"
@@ -13,12 +13,7 @@
     </v-row>
     <!-- テストユーザーログインボタン -->
     <v-row justify="center" class="my-3">
-      <AppButton
-        :loading="isRunningTestLogin"
-        width="400"
-        color="success"
-        outlined
-        @click="testLogin"
+      <AppButton width="300" color="success" outlined :loading="isRunningTestLogin" @click="testLogin"
         ><v-icon>mdi-account-arrow-left-outline</v-icon>テストユーザーでログイン
       </AppButton>
     </v-row>
@@ -29,33 +24,29 @@
       または
     </v-card-title>
 
-    <v-form ref="form" lazy-validation>
-      <v-row class="mx-2">
-        <FormUserEmail :user-email.sync="signInUser.email" email-label="メールアドレス" />
+    <v-form ref="form" v-model="isValid">
+      <v-row no-gutters class="mx-2" justify="center">
+        <v-col cols="10" class="pa-0">
+          <TextInput v-model="signInUser.email" :rules="$rules.email" placeholder="メールアドレス" />
+        </v-col>
       </v-row>
-      <v-row class="mx-2">
-        <FormUserPassword
-          password-label="パスワード"
-          :show-password="isOpenedShowPassword"
-          :user-password.sync="signInUser.password"
-          @handle-show-password="isOpenedShowPassword = !isOpenedShowPassword"
-        />
+      <v-row no-gutters class="mx-2" justify="center">
+        <v-col cols="10" class="pa-0">
+          <TextInput v-model="signInUser.password" :rules="$rules.password" label="パスワード" />
+        </v-col>
       </v-row>
-      <v-row justify="center">
-        <AppButton text @click="isOpenedResetPasswordDialog = true"
-          >※パスワードを忘れた方はこちら
-        </AppButton>
-      </v-row>
-
-      <v-card-actions class="justify-end">
-        <AppButton :disabled="isValid" :loading="isRunningLogin" @click="login">ログイン</AppButton>
-        <AppButton outlined @click="isOpenedCreateUserDialog = true">新規作成</AppButton>
-      </v-card-actions>
-      <!-- 新規ユーザー作成ダイアログ -->
-      <LazyCreateUserDialog v-model="isOpenedCreateUserDialog" />
-      <!-- パスワードリセットダイアログ -->
-      <LazyResetPasswordDialog v-model="isOpenedResetPasswordDialog" />
     </v-form>
+    <v-row justify="center">
+      <AppButton text @click="isOpenedResetPasswordDialog = true">※パスワードを忘れた方はこちら </AppButton>
+    </v-row>
+    <v-card-actions class="justify-end">
+      <AppButton :disabled="!isValid" :loading="isRunningLogin" @click="runLogin">ログイン</AppButton>
+      <AppButton :diabled="isRunningLogin" @click="isOpenedCreateUserDialog = true">新規作成</AppButton>
+    </v-card-actions>
+    <!-- 新規ユーザー作成ダイアログ -->
+    <LazyCreateUserDialog v-model="isOpenedCreateUserDialog" />
+    <!-- パスワードリセットダイアログ -->
+    <LazyResetPasswordDialog v-model="isOpenedResetPasswordDialog" />
   </v-card>
 </template>
 
@@ -73,7 +64,6 @@ export default {
       isOpenedResetPasswordDialog: false,
       isRunningTestLogin: false,
       isRunningLogin: false,
-      isOpenedShowPassword: false,
       isValid: false
     }
   },
@@ -91,24 +81,18 @@ export default {
       this.isRunningTestLogin = true
     },
     // メールアドレスログイン
-    async login() {
+    async runLogin() {
       // ボタンのローディングをON
       this.isRunningLogin = true
-      const signInUser = this.signInUser
-      if (!signInUser.password || !signInUser.email) {
-        this.$refs.form.validate()
-        return
-      }
-
       await this.login({
-        email: signInUser.email,
-        password: signInUser.password
+        email: this.signInUser.email,
+        password: this.signInUser.password
       })
       // ボタンのローディングをOFF
       this.isRunningLogin = false
     },
 
-    ...mapActions('modules/user/auth', ['googleLogin', 'login'])
+    ...mapActions('modules/auth', ['googleLogin', 'login'])
   }
 }
 </script>

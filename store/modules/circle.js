@@ -15,13 +15,13 @@ const mutations = {
   },
   // サークル作成
   createCircle(state, createdCircle) {
-    console.debug('data:', createdCircle)
+    console.debug('data', createdCircle)
     state.circle = createdCircle
   },
   // サークル更新
   updateCircle(state, updatedCircle) {
     console.debug('data:', updatedCircle)
-    state.circle = updateCircle
+    state.circle = updatedCircle
   },
   // メンバー追加
   addMember(state, addedMember) {
@@ -91,10 +91,8 @@ const actions = {
   // サークル作成
   async createCircle({ getters, commit }, circle) {
     console.debug('input:', circle)
-    let id = await db.collection(`users/${getters.userUid}/circle`).doc().id
     // 画像登録後の場合はidを代入
-    if (circle.id) id = circle.id
-
+    const id = circle.id ? circle.id : await db.collection(`users/${getters.userUid}/circle`).doc().id
     const createCircleInput = {
       id,
       name: circle.name,
@@ -111,7 +109,7 @@ const actions = {
       }
       commit('createCircle', createCircleInput)
       // スナックバー
-      commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+      commit('modules/commonParts/openSnackbar', null, { root: true })
     } catch (e) {
       alert('サークル作成に失敗しました。もう一度やり直してください')
       console.error(e)
@@ -120,9 +118,8 @@ const actions = {
   // サークル画像更新
   async uploadCircleImageFile({ getters, dispatch }, circle) {
     console.debug('input:', circle)
-
+    const id = circle.id ? circle.id : await db.collection(`users/${getters.userUid}/circle`).doc().id
     try {
-      const id = await db.collection(`users/${getters.userUid}/circle`).doc().id
       const imageFile = circle.imageFile
       const imageRef = await storageRef.child(`circleImages/${id}/${imageFile.name}`)
       const snapShot = await imageRef.put(imageFile)
@@ -140,9 +137,8 @@ const actions = {
   // サークル更新
   async updateCircle({ getters, commit }, circle) {
     console.debug('input:', circle)
-
     const updateCircleInput = {
-      id,
+      id: circle.id,
       name: circle.name,
       fileName: circle.fileName,
       photoURL: circle.photoURL
@@ -152,11 +148,11 @@ const actions = {
       if (getters.userUid) {
         await db
           .collection(`users/${getters.userUid}/circle`)
-          .doc(getters.circleId)
+          .doc(circle.id)
           .update(updateCircleInput)
         commit('updateCircle', updateCircleInput)
         // スナックバー
-        commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+        commit('modules/commonParts/openSnackbar', null, { root: true })
       }
     } catch (e) {
       alert('サークルの更新に失敗しました。もう一度やり直してください')
@@ -164,15 +160,15 @@ const actions = {
     }
   },
   // サークル画像更新
-  async updateCircleImageFile({ dispatch }, circle) {
+  async updateCircleImageFile({ dispatch, getters }, circle) {
     console.debug('input:', circle)
 
     try {
+      const id = await db.collection(`users/${getters.userUid}/circle`).doc().id
       const imageFile = circle.imageFile
-      const imageRef = await storageRef.child(`circleImages/${circle.id}/${imageFile.name}`)
+      const imageRef = await storageRef.child(`circleImages/${id}/${imageFile.name}`)
       const snapShot = await imageRef.put(imageFile)
       const photoURL = await snapShot.ref.getDownloadURL()
-
       circle.fileName = imageFile.name
       circle.photoURL = photoURL
       // サークルを更新する
@@ -189,7 +185,7 @@ const actions = {
         .doc(getters.circleId)
         .delete()
       commit('removeCircle', getters.circleId)
-      await dispatch('modules/activity-plans/activityPlans/allRemoveActivityPlan', null, {
+      await dispatch('modules/activityPlans/allRemoveActivityPlan', null, {
         root: true
       })
       this.$router.push({ path: 'activityPlans' })
@@ -225,7 +221,7 @@ const actions = {
           .set(addMemberInput)
       }
       commit('addMember', addMemberInput)
-      commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+      commit('modules/commonParts/openSnackbar', null, { root: true })
     } catch (e) {
       alert('メンバー追加に失敗しました。もう一度やり直してください。')
       console.error(e)
@@ -246,7 +242,7 @@ const actions = {
             .update(editMember)
         })
         await commit('updateMember', editMember)
-        commit('modules/common-parts/commonParts/openSnackbar', null, { root: true })
+        commit('modules/commonParts/openSnackbar', null, { root: true })
       }
     } catch (e) {
       alert('更新に失敗しました。もう一度やり直しください。')
@@ -254,9 +250,7 @@ const actions = {
     }
   },
   // メンバー削除
-  async removeMember({ commit, getters }, circleMember) {
-    console.debug('input:', circleMember)
-
+  async removeMember({ commit, getters }, id) {
     try {
       if (getters.userUid) {
         const snapShot = await db.collection(`users/${getters.userUid}/circle`).get()
@@ -264,10 +258,10 @@ const actions = {
         snapShot.docs.map(async doc => {
           await doc.ref
             .collection('circleMember')
-            .doc(circleMember.id)
+            .doc(id)
             .delete()
         })
-        commit('removeMember', circleMember.id)
+        commit('removeMember', id)
       }
     } catch (e) {
       alert('削除に失敗しました。もう一度やり直してください')
@@ -286,7 +280,7 @@ const actions = {
     const subCollection = await snapShot.ref.collection('circleMember').get()
 
     subCollection.docs.map(async doc => {
-      snapShot.ref
+      await snapShot.ref
         .collection('circleMember')
         .doc(doc.id)
         .delete()
@@ -314,7 +308,7 @@ const getters = {
   },
   // uidの取得
   userUid: (state, getters, rootState, rootGetters) => {
-    return rootGetters['modules/user/auth/uid']
+    return rootGetters['modules/auth/uid']
   }
 }
 

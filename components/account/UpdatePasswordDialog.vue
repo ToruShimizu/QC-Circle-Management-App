@@ -1,46 +1,54 @@
 <template>
-  <AppDialog
-    :is-opened="isOpened"
-    class="update-password-dialog"
-    title="パスワード変更"
-    @close="$emit('close', false)"
-  >
+  <AppDialog :is-opened="isOpened" class="update-password-dialog" title="パスワード変更" @close="$emit('close', false)">
     <v-card-subtitle class="text-center font-italic">
       ※ 変更完了後にログイン画面に戻ります。
     </v-card-subtitle>
     <v-divider />
-    <v-form v-model="isValid" ref="form" lazy-validation>
+    <v-form ref="form" v-model="isValid">
       <!-- メールアドレス入力 -->
-      <v-row class="mx-2">
-        <FormUserEmail
-          :user-email.sync="updatePasswordInput.email"
-          email-label="現在のメールアドレス"
-        />
-      </v-row>
-      <!-- 現在のパスワード入力 -->
-      <v-row class="mx-2">
-        <FormUserPassword
-          :user-password.sync="updatePasswordInput.password"
-          :show-password="isOpenedPassword"
-          @handle-show-password="isOpenedPassword = !isOpenedPassword"
-          password-label="現在のパスワード"
-        />
-      </v-row>
-      <!-- 新しいパスワード入力 -->
-      <v-row class="mx-2">
-        <FormUserPassword
-          :user-password.sync="updatePasswordInput.newPassword"
-          :show-password="isOpenedNewPassword"
-          @handle-show-password="isOpenedNewPassword = !isOpenedNewPassword"
-          password-label="新しいパスワード"
-        />
-      </v-row>
+      <div class="py-5">
+        <v-row class="mx-2">
+          <v-col>
+            <TextInput
+              v-model="updatePasswordInput.email"
+              :rules="$rules.email"
+              icon="mdi-email-outline"
+              label="現在のメールアドレス"
+            />
+          </v-col>
+        </v-row>
+
+        <!-- 現在のパスワード入力 -->
+        <v-row class="mx-2">
+          <v-col>
+            <TextInput
+              v-model="updatePasswordInput.password"
+              :rules="$rules.password"
+              type="password"
+              icon="mdi-account-key-outline"
+              label="現在のパスワード"
+            />
+          </v-col>
+        </v-row>
+        <!-- 新しいパスワード入力 -->
+        <v-row class="mx-2">
+          <v-col>
+            <TextInput
+              v-model="updatePasswordInput.newPassword"
+              :rules="$rules.password"
+              type="password"
+              icon="mdi-account-key"
+              label="新しいパスワード"
+            />
+          </v-col>
+        </v-row>
+      </div>
     </v-form>
     <template slot="buttons">
-      <AppButton :disabled="isValid" outlined @click="runUpdatePassword">
-        保存する
+      <AppButton :disabled="!isValid" :loading="isRunning" @click="runUpdatePassword">
+        更新する
       </AppButton>
-      <AppButton :loading="isRunning" color="success" outlined @click="$emit('close', false)">
+      <AppButton :disabled="isRunning" color="success" outlined @click="$emit('close', false)">
         キャンセル
       </AppButton>
     </template>
@@ -69,27 +77,25 @@ export default {
         password: '',
         newPassword: ''
       },
-      isOpenedPassword: false,
       isOpenedNewPassword: false,
       isRunning: false,
       isValid: false
     }
   },
+  watch: {
+    isOpened() {
+      if (this.isOpened) {
+        this.$nextTick(() => this.$refs.form.reset())
+      }
+    }
+  },
   methods: {
     // パスワード更新ボタン
     async runUpdatePassword() {
-      if (
-        !this.updatePasswordInput.email ||
-        !this.updatePasswordInput.password ||
-        !this.updatePasswordInput.editPassword
-      ) {
-        this.$refs.form.validate()
-        return
-      }
       // ローディングをON
       this.isRunning = true
       await this.updatePassword({
-        updatePassword: this.updatePasswordInput.editPassword,
+        updatePassword: this.updatePasswordInput.newPassword,
         email: this.updatePasswordInput.email,
         password: this.updatePasswordInput.password
       })
@@ -97,7 +103,7 @@ export default {
       // ローディングをOFF
       this.isRunning = false
     },
-    ...mapActions('modules/user/userInfo', ['updatePassword'])
+    ...mapActions('modules/userInfo', ['updatePassword'])
   }
 }
 </script>
