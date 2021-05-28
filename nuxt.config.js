@@ -1,7 +1,17 @@
 import colors from 'vuetify/es5/util/colors'
 import { i18nOptions } from './locales/i18n'
+require('dotenv').config()
+const { API_KEY, AUTH_DOMAIN, DATABASE_URL, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID } = process.env
 
 export default {
+  env: {
+    API_KEY,
+    AUTH_DOMAIN,
+    DATABASE_URL,
+    PROJECT_ID,
+    STORAGE_BUCKET,
+    MESSAGING_SENDER_ID
+  },
   /*
    ** Nuxt rendering mode
    ** See https://nuxtjs.org/api/configuration-mode
