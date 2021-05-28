@@ -33,7 +33,6 @@
               single-line
               hide-details
             />
-            <v-divider class="mx-4" inset vertical />
             <AppButton @click="isOpenedAddMemberDialog = true">メンバー追加 </AppButton>
 
             <v-spacer />

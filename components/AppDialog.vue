@@ -1,6 +1,6 @@
 <template>
   <v-dialog :value="isOpened" :width="width" no-click-animation class="app-dialog" persistent>
-    <v-card color="grey50" tile>
+    <v-card tile>
       <!-- ダイアログのヘッダ -->
       <v-toolbar flat>
         <!-- タイトル -->
@@ -16,7 +16,7 @@
       </div>
 
       <!-- ボタン -->
-      <v-card-actions class="d-flex justify-end px-4 pb-12">
+      <v-card-actions class="d-flex justify-end px-4 ">
         <slot name="buttons" />
       </v-card-actions>
     </v-card>
@@ -40,7 +40,7 @@ export default {
     },
     width: {
       type: String,
-      default: '500px'
+      default: '400px'
     }
   }
 }

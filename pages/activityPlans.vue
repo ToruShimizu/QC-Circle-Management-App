@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pages-activity-plans mb-5 py-5">
+  <v-container id="pages-activity-plans" class="mb-5 py-5">
     <v-row class="justify-center">
       <!-- サークル作成ダイアログ（チームが作成されていない時に表示） -->
       <template v-if="!circleName">
@@ -195,7 +195,7 @@ export default {
 </script>
 
 <style scoped>
-.pages-activity-plans {
-  width: 600px;
+#pages-activity-plans {
+  max-width: 600px;
 }
 </style>
