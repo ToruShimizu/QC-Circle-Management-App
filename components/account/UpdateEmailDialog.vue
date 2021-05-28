@@ -21,7 +21,7 @@
     </v-form>
     <template slot="buttons">
       <AppButton :disabled="!isValid" :loading="isRunning" @click="runUpdateEmail">
-        保存する
+        更新する
       </AppButton>
       <AppButton :disabled="isRunning" color="success" outlined @click="$emit('close', false)">
         キャンセル

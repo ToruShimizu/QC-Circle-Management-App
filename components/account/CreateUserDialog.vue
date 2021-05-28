@@ -38,7 +38,7 @@
       </v-row>
     </v-form>
     <template slot="buttons">
-      <AppButton :disabled="!isValid" :loading="isRunning" @click="runCreateUser">保存する </AppButton>
+      <AppButton :disabled="!isValid" :loading="isRunning" @click="runCreateUser">作成する </AppButton>
       <AppButton :disabled="isRunning" color="success" outlined @click="$emit('close', false)">
         キャンセル
       </AppButton>

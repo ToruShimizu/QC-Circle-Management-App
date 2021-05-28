@@ -58,7 +58,7 @@
     </v-form>
     <!-- 保存ボタン、閉じるボタン -->
     <template slot="buttons">
-      <AppButton :disabled="!isValid" :loading="isRunning" @click="runUpdateActivityPlan">保存する </AppButton>
+      <AppButton :disabled="!isValid" :loading="isRunning" @click="runUpdateActivityPlan">更新する </AppButton>
       <AppButton :disabled="isRunning" color="success" outlined @click="$emit('close', false)">キャンセル </AppButton>
     </template>
   </AppDialog>
