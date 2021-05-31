@@ -22,6 +22,7 @@
             v-model="addMemberInput.role"
             :items="circleRoles"
             :rules="$rules.role"
+            multiple
             icon="mdi-briefcase-account-outline"
             label="役割"
           />
@@ -45,7 +46,6 @@
       <AppButton :loading="isRunning" :disabled="!isValid" @click="runAddMember">保存する </AppButton>
       <AppButton :disabled="isRunning" color="success" outlined @click="$emit('close', false)">キャンセル </AppButton>
     </template>
-    <v-divider />
   </AppDialog>
 </template>
 
