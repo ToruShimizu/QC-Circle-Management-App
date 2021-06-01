@@ -66,9 +66,9 @@ export default {
   methods: {
     // パスワードリセット実行
     async runResetPassword() {
+      // ローディングをON
+      this.isRunning = true
       if (this.resetUserPasswordInput.email === 'test@example.com') {
-        // ローディングをON
-        this.isRunning = true
         alert('テストユーザーはパスワードを再設定することはできません')
         return
       }
