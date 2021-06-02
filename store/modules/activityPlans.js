@@ -128,7 +128,7 @@ const actions = {
         detail: planContents.detail,
         inChargeMember: planContents.inChargeMember,
         done: false,
-        fileName: planContents.photoURL ? file.name : '',
+        fileName: planContents.photoURL && file ? file.name : '',
         photoURL: planContents.photoURL,
         comments: planContents.comments,
         created: firebase.firestore.FieldValue.serverTimestamp()

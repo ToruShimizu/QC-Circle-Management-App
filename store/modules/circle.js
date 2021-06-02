@@ -142,7 +142,7 @@ const actions = {
       const updateCircleInput = {
         id: circle.id,
         name: circle.name,
-        fileName: circle.photoURL ? file.name : '',
+        fileName: circle.photoURL && file ? file.name : '',
         photoURL: circle.photoURL
       }
 
