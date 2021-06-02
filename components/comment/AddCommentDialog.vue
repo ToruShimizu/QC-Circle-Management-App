@@ -28,7 +28,7 @@
                 <v-icon v-else>mdi-account-outline</v-icon>
               </v-avatar>
               <!-- ユーザーネーム -->
-              <span>{{ gettersUsername }}</span> <v-spacer />
+              <span class="ml-2">{{ gettersUsername }}</span> <v-spacer />
               <v-btn icon @click="runRemoveComment(comment)">
                 <v-icon>mdi-delete-outline</v-icon>
               </v-btn>
@@ -39,10 +39,10 @@
     </v-row>
     <template slot="buttons">
       <!-- コメント入力 -->
-      <v-col cols="9">
+      <v-col cols="9" class="pr-0">
         <TextInput v-model="message" icon="mdi-message-text-outline" label="コメントを追加する" />
       </v-col>
-      <v-col cols="3">
+      <v-col cols="3" class="pl-0 mr-5">
         <AppButton class="ml-3 mb-6" :disabled="!message" @click="runAddComment">追加する </AppButton>
       </v-col>
     </template>
@@ -74,7 +74,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('modules/auth', ['gettersUserName', 'photoURL'])
+    ...mapGetters('modules/auth', ['gettersUsername', 'photoURL'])
   },
   watch: {
     isOpened() {
