@@ -1,19 +1,21 @@
-# Name
+# QC-Circle-Management-App
 
-QC-Circle-Management-App
-
-## Overview
+## 概要
 
 このアプリは QC サークル活動（小集団改善活動）を管理するアプリです。  
 (QC サークルとは同じ職場内で品質管理活動を自発的に小グループで行う活動です。)
 
-## DEMO
+---
+
+## デモ
 
 - 接続先 URL: <https://qc-circle-management-app.netlify.app>
 
-![デモ動画](https://user-images.githubusercontent.com/65491855/100514423-e70b8480-31b7-11eb-9cd4-fe30b11b9249.gif)
+## ![デモ動画](https://user-images.githubusercontent.com/65491855/100514423-e70b8480-31b7-11eb-9cd4-fe30b11b9249.gif)
 
-## Description
+---
+
+## 詳細
 
 このアプリでは、QC サークル活動における様々なタスクの進捗管理を行うことができます。
 
@@ -23,13 +25,15 @@ QC-Circle-Management-App
 - 活動計画の進捗管理
 - 改善事例作成のタスク管理
 
-## Features
+---
+
+## 特徴
 
 1. **ログイン**
    1. 「テストユーザーとしてログイン」を選択されますとそのままログインできます。
    2. テストユーザー以外でログインする場合は新規作成、各種ログイン機能をご利用ください。
    3. ログイン後、左側のサイドメニューよりログインユーザーの編集が行えます（テストユーザーは不可）。  
-      ![ログイン画面](https://user-images.githubusercontent.com/65491855/100514762-b11bcf80-31ba-11eb-87bc-aa9fca87f2fc.png)
+      ![ログイン画面](https://user-images.githubusercontent.com/65491855/120437889-9c173780-c3bb-11eb-913e-9e35a69fc18b.png)
 2. **サークル作成**
    1. ログイン後に表示される、サークル新規作成をクリックしてサークルを作成します。
    2. サークル作成後にサークル名の右側のアイコンより編集、削除を行うことができます。
@@ -58,37 +62,90 @@ QC-Circle-Management-App
    - 活動計画作成時の担当メンバー選択時にサークル内の役割も連動させて自動入力する。
    - サークルメンバー登録を Firebase に登録されているユーザー情報で行えるようにする。
 
-## Requirement
+---
+
+## バージョン情報
 
 | Package |   Ver.    |
 | :-----: | :-------: |
 |  Node   | "14.15.1" |
-|   npm   | "6.14.9"  |
-
-## Installation
-
-```
-$ nodebrew install-binar v14.15.1
-$ npm install -g npm@6.14.8
-```
-
-## Usage
-
-```
-$ git clone https://github.com/ToruShimizu/QC-Circle-Management-App.git
-$ cd QC-Circle-Management-App
-$ npm run dev
-```
-
-## Technology
+|   npm   | "6.14.8"  |
 
 | Framework |   Ver.   |
 | :-------: | :------: |
-|  Nuxt.js  | "2.14.7" |
-|  Vuetify  | "1.11.2" |
+|  Nuxt.js  | "2.15.6" |
+|  Vuetify  | "2.4.2"  |
 
-- DB
-  - Firebase
+---
+
+## 使用技術
+
+- Vuex  
+  https://vuex.vuejs.org/ja/
+
+---
+
+## 文言管理
+
+文言の管理は `i18n` を使用する。  
+DOC: https://i18n.nuxtjs.org/
+
+---
+
+## ディレクトリ構成
+
+```
+@
+├─ nuxt
+├─ .vscode
+├─ assets
+├─ components
+├─ coverage
+├─ dist
+├─ layouts
+├─ locales  // i18n関連
+├─ middleware
+├─ pages
+├─ plugins
+│   ├─ firebase.js  // firebase接続情報
+│   └─ rules.js  // バリデーション関連
+├─ static
+├─ store  // Vuex
+├─ test
+├─ .eslintrc.js
+├─ .gitignore
+├─ .node-version
+├─ .npmrc
+├─ .prettierrc
+├─ jest.config.js
+├─ jsconfig.json
+├─ nuxt.config.js
+├─ package-lock.json
+├─ package.json
+└─ README.md
+
+```
+
+---
+
+## 環境変数設定
+
+`dotenv` で管理
+
+---
+
+## 環境構築方法
+
+```bash
+$ git clone https://github.com/ToruShimizu/QC-Circle-Management-App.git
+$ cd QC-Circle-Management-App
+$ nodebrew install-binar v14.15.1
+$ npm install -g npm@6.14.8
+$ npm i
+$ npm run dev
+```
+
+---
 
 ## Author
 
