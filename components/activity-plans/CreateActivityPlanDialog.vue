@@ -107,7 +107,12 @@ export default {
   watch: {
     isOpened() {
       if (this.isOpened) {
-        this.$nextTick(() => this.$refs.form.reset())
+        this.$nextTick(() => {
+          this.$refs.form.reset()
+          this.file = null
+          this.createPlanContentsInput.fileName = ''
+          this.createPlanContentsInput.photoURL = ''
+        })
       }
     }
   },
