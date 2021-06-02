@@ -23,6 +23,11 @@ const mutations = {
     console.debug('data:', updatedCircle)
     state.circle = updatedCircle
   },
+  // サークル画像削除
+  removeImage(state) {
+    state.circle.photoURL = ''
+    state.circle.fileName = ''
+  },
   // メンバー追加
   addMember(state, addedMember) {
     console.debug('data:', addedMember)
@@ -89,24 +94,29 @@ const actions = {
     }
   },
   // サークル作成
-  async createCircle({ getters, commit }, circle) {
+  async createCircle({ getters, commit }, { circle, file }) {
     console.debug('input:', circle)
-    // 画像登録後の場合はidを代入
-    const id = circle.id ? circle.id : await db.collection(`users/${getters.userUid}/circle`).doc().id
-    const createCircleInput = {
-      id,
-      name: circle.name,
-      fileName: circle.fileName,
-      photoURL: circle.photoURL
-    }
-
     try {
-      if (getters.userUid) {
-        await db
-          .collection(`users/${getters.userUid}/circle`)
-          .doc(id)
-          .set(createCircleInput)
+      const id = await db.collection(`users/${getters.userUid}/circle`).doc().id
+      // 画像がある場合
+      if (file) {
+        const imageRef = await storageRef.child(`circleImages/${id}/${file.name}`)
+        const snapShot = await imageRef.put(file)
+        circle.photoURL = await snapShot.ref.getDownloadURL()
       }
+
+      const createCircleInput = {
+        id,
+        name: circle.name,
+        fileName: file ? file.name : circle.fileName,
+        photoURL: circle.photoURL
+      }
+
+      await db
+        .collection(`users/${getters.userUid}/circle`)
+        .doc(id)
+        .set(createCircleInput)
+
       commit('createCircle', createCircleInput)
       // スナックバー
       commit('modules/commonParts/openSnackbar', null, { root: true })
@@ -115,68 +125,55 @@ const actions = {
       console.error(e)
     }
   },
-  // サークル画像更新
-  async uploadCircleImageFile({ getters, dispatch }, circle) {
-    console.debug('input:', circle)
-    const id = circle.id ? circle.id : await db.collection(`users/${getters.userUid}/circle`).doc().id
-    try {
-      const imageFile = circle.imageFile
-      const imageRef = await storageRef.child(`circleImages/${id}/${imageFile.name}`)
-      const snapShot = await imageRef.put(imageFile)
-      const photoURL = await snapShot.ref.getDownloadURL()
 
-      circle.fileName = imageFile.name
-      circle.photoURL = photoURL
-      circle.id = id
-      // サークルを作成する
-      dispatch('createCircle', circle)
-    } catch (e) {
-      console.error(e)
-    }
-  },
   // サークル更新
-  async updateCircle({ getters, commit }, circle) {
-    console.debug('input:', circle)
-    const updateCircleInput = {
-      id: circle.id,
-      name: circle.name,
-      fileName: circle.fileName,
-      photoURL: circle.photoURL
-    }
-
+  async updateCircle({ getters, commit, dispatch }, { circle, file }) {
+    console.debug('circle:', circle, 'file: ', file)
+    // 前の画像ファイルがあって、画像の更新、または削除する時は前の画像を削除
+    if (circle.fileName && !circle.photoURL) await dispatch('removeImageFile', circle)
+    // 画像がある場合
     try {
-      if (getters.userUid) {
-        await db
-          .collection(`users/${getters.userUid}/circle`)
-          .doc(circle.id)
-          .update(updateCircleInput)
-        commit('updateCircle', updateCircleInput)
-        // スナックバー
-        commit('modules/commonParts/openSnackbar', null, { root: true })
+      if (file) {
+        const imageRef = await storageRef.child(`circleImages/${circle.id}/${file.name}`)
+        const snapShot = await imageRef.put(file)
+        circle.photoURL = await snapShot.ref.getDownloadURL()
       }
+
+      const updateCircleInput = {
+        id: circle.id,
+        name: circle.name,
+        fileName: circle.photoURL ? file.name : '',
+        photoURL: circle.photoURL
+      }
+
+      await db
+        .collection(`users/${getters.userUid}/circle`)
+        .doc(circle.id)
+        .update(updateCircleInput)
+      commit('updateCircle', updateCircleInput)
+      // スナックバー
+      commit('modules/commonParts/openSnackbar', null, { root: true })
     } catch (e) {
       alert('サークルの更新に失敗しました。もう一度やり直してください')
       console.error(e)
     }
   },
-  // サークル画像更新
-  async updateCircleImageFile({ dispatch, getters }, circle) {
-    console.debug('input:', circle)
-
+  // 画像ファイル削除
+  async removeImageFile({ commit, getters }, circle) {
+    console.debug('input: ', circle)
     try {
-      const id = await db.collection(`users/${getters.userUid}/circle`).doc().id
-      const imageFile = circle.imageFile
-      const imageRef = await storageRef.child(`circleImages/${id}/${imageFile.name}`)
-      const snapShot = await imageRef.put(imageFile)
-      const photoURL = await snapShot.ref.getDownloadURL()
-      circle.fileName = imageFile.name
-      circle.photoURL = photoURL
-      // サークルを更新する
-      dispatch('updateCircle', circle)
+      const imageRef = await storageRef.child(`circleImages/${circle.id}/${circle.fileName}`)
+      await imageRef.delete()
+      await db
+        .collection(`users/${getters.userUid}/circle`)
+        .doc(circle.id)
+        .update({ photoURL: null, fileName: null })
+      commit('removeImage')
     } catch (e) {
       console.error(e)
     }
   },
+
   // サークル削除
   async removeCircle({ commit, getters, dispatch }) {
     try {
@@ -290,11 +287,11 @@ const actions = {
 }
 
 const getters = {
-  // チームネームの取得
+  // サークル名の取得
   circleName: state => {
     return state.circle.name
   },
-  // チームidの取得
+  // サークルidの取得
   circleId: state => {
     return state.circle.id
   },

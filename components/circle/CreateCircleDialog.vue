@@ -26,7 +26,7 @@
       <!-- サークル画像選択 -->
       <v-row class="mx-2">
         <v-col>
-          <FileInput v-model="createCircleInput.imageFile" />
+          <FileInput v-model="file" label="画像ファイル" />
         </v-col>
       </v-row>
     </v-form>
@@ -55,11 +55,10 @@ export default {
     return {
       createCircleInput: {
         name: '',
-        imageFile: null,
         fileName: '',
         photoURL: ''
       },
-      nameRules: [v => !!v || '名前は必須です。'],
+      file: null,
       isRunning: false,
       isValid: false
     }
@@ -79,16 +78,14 @@ export default {
     // サークル作成
     async runCreateCircle() {
       this.isRunning = true
-      if (this.createCircleInput.imageFile) {
-        await this.uploadCircleImageFile(this.createCircleInput)
-      } else {
-        await this.createCircle(this.createCircleInput)
-      }
+
+      await this.createCircle({ circle: this.createCircleInput, file: this.file })
+
       this.isRunning = false
       this.$emit('close', false)
     },
 
-    ...mapActions('modules/circle', ['createCircle', 'uploadCircleImageFile'])
+    ...mapActions('modules/circle', ['createCircle'])
   }
 }
 </script>
