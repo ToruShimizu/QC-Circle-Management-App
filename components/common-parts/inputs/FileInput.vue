@@ -4,6 +4,7 @@
       :value="file"
       accept="image/*"
       :placeholder="$attrs.placeholder || label"
+      :truncate-length="15"
       show-size
       outlined
       dense
