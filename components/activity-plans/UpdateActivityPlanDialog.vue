@@ -47,12 +47,23 @@
           />
         </v-col>
       </v-row>
-
-      <template>
+      <!-- 画像ファイルがない場合 -->
+      <template v-if="!updateContentsInput.photoURL">
         <v-row class="mx-2">
           <v-col>
-            <FileInput v-model="updateContentsInput.imageFile" label="画像ファイル" />
+            <FileInput v-model="file" label="画像ファイル" />
           </v-col>
+        </v-row>
+      </template>
+      <!-- 画像ファイルがある場合 -->
+      <template v-else>
+        <v-row no-gutters class="justify-end">
+          <v-btn icon @click="removeImage">
+            <v-icon>mdi-delete-outline</v-icon>
+          </v-btn>
+        </v-row>
+        <v-row no-gutters>
+          <LoadingImg :src="updateContentsInput.photoURL" />
         </v-row>
       </template>
     </v-form>
@@ -91,7 +102,8 @@ export default {
     return {
       isRunning: false,
       isValid: false,
-      updateContentsInput: {}
+      updateContentsInput: {},
+      file: null
     }
   },
 
@@ -101,26 +113,23 @@ export default {
   watch: {
     isOpened() {
       if (this.isOpened) this.updateContentsInput = Object.assign({}, this.contents)
-      this.updateContentsInput.imageFile = null
+      this.file = null
     }
   },
   methods: {
     // 活動計画更新ボタン
     async runUpdateActivityPlan() {
       if (!confirm('活動計画を更新しますか？')) return
-      if (this.updateContentsInput.imageFile) {
-        await this.runUpdateImageFile(this.updateContentsInput)
-      } else {
-        await this.updateActivityPlan(this.updateContentsInput)
-      }
+
+      await this.updateActivityPlan({ planContents: this.updateContentsInput, file: this.file })
+
       this.$emit('close', false)
     },
-
-    // 画像ファイルを更新
-    async runUpdateImageFile(planContents) {
-      await this.updatePlanContentsImageFile(planContents)
+    // 画像ファイルを一時的に取り除く、更新実行時に削除される
+    removeImage() {
+      this.updateContentsInput.photoURL = ''
     },
-    ...mapActions('modules/activityPlans', ['updateActivityPlan', 'updatePlanContentsImageFile'])
+    ...mapActions('modules/activityPlans', ['updateActivityPlan'])
   }
 }
 </script>

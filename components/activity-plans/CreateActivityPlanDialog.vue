@@ -53,7 +53,7 @@
         <v-row class="mx-2">
           <v-col sm="12" md="12">
             <!-- 画像入力エリア -->
-            <FileInput v-model="createPlanContentsInput.imageFile" label="画像ファイル" />
+            <FileInput v-model="file" label="画像ファイル" />
           </v-col>
         </v-row>
       </v-form>
@@ -90,7 +90,6 @@ export default {
       createPlanContentsInput: {
         category: '',
         detail: '',
-        imageFile: null,
         inChargeMember: [],
         fileName: '',
         photoURL: '',
@@ -98,7 +97,8 @@ export default {
         done: false
       },
       isRunning: false,
-      isValid: false
+      isValid: false,
+      file: null
     }
   },
   computed: {
@@ -116,17 +116,15 @@ export default {
     async runCreateActivityPlan() {
       if (!confirm('活動計画を作成しますか？')) return
       this.isRunning = true
-      if (this.createPlanContentsInput.imageFile) {
-        await this.uploadPlanContentsImageFile(this.createPlanContentsInput)
-      } else {
-        await this.createActivityPlan(this.createPlanContentsInput)
-      }
+
+      await this.createActivityPlan({ planContents: this.createPlanContentsInput, file: this.file })
+
       this.isRunning = false
 
       this.$emit('close', false)
     },
 
-    ...mapActions('modules/activityPlans', ['createActivityPlan', 'uploadPlanContentsImageFile'])
+    ...mapActions('modules/activityPlans', ['createActivityPlan'])
   }
 }
 </script>
