@@ -209,14 +209,13 @@ const actions = {
     }
 
     try {
-      if (getters.userUid) {
-        await db
-          .collection(`users/${getters.userUid}/circle`)
-          .doc(getters.circleId)
-          .collection('circleMember')
-          .doc(id)
-          .set(addMemberInput)
-      }
+      await db
+        .collection(`users/${getters.userUid}/circle`)
+        .doc(getters.circleId)
+        .collection('circleMember')
+        .doc(id)
+        .set(addMemberInput)
+
       commit('addMember', addMemberInput)
       commit('modules/commonParts/openSnackbar', null, { root: true })
     } catch (e) {
@@ -229,18 +228,16 @@ const actions = {
     console.debug('input:', editMember)
 
     try {
-      if (getters.userUid) {
-        const snapShot = await db.collection(`users/${getters.userUid}/circle`).get()
+      const snapShot = await db.collection(`users/${getters.userUid}/circle`).get()
 
-        snapShot.docs.map(async doc => {
-          await doc.ref
-            .collection('circleMember')
-            .doc(editMember.id)
-            .update(editMember)
-        })
-        await commit('updateMember', editMember)
-        commit('modules/commonParts/openSnackbar', null, { root: true })
-      }
+      snapShot.docs.map(async doc => {
+        await doc.ref
+          .collection('circleMember')
+          .doc(editMember.id)
+          .update(editMember)
+      })
+      await commit('updateMember', editMember)
+      commit('modules/commonParts/openSnackbar', null, { root: true })
     } catch (e) {
       alert('更新に失敗しました。もう一度やり直しください。')
       console.error(e)
@@ -249,17 +246,15 @@ const actions = {
   // メンバー削除
   async removeMember({ commit, getters }, id) {
     try {
-      if (getters.userUid) {
-        const snapShot = await db.collection(`users/${getters.userUid}/circle`).get()
+      const snapShot = await db.collection(`users/${getters.userUid}/circle`).get()
 
-        snapShot.docs.map(async doc => {
-          await doc.ref
-            .collection('circleMember')
-            .doc(id)
-            .delete()
-        })
-        commit('removeMember', id)
-      }
+      snapShot.docs.map(async doc => {
+        await doc.ref
+          .collection('circleMember')
+          .doc(id)
+          .delete()
+      })
+      commit('removeMember', id)
     } catch (e) {
       alert('削除に失敗しました。もう一度やり直してください')
       console.error(e)
@@ -268,21 +263,24 @@ const actions = {
   // メンバー全削除
   async allRemoveMember({ commit, getters }, id) {
     console.debug('input:', id)
+    try {
+      const snapShot = await db
+        .collection(`users/${getters.userUid}/circle`)
+        .doc(id)
+        .get()
 
-    const snapShot = await db
-      .collection(`users/${getters.userUid}/circle`)
-      .doc(id)
-      .get()
+      const subCollection = await snapShot.ref.collection('circleMember').get()
 
-    const subCollection = await snapShot.ref.collection('circleMember').get()
-
-    subCollection.docs.map(async doc => {
-      await snapShot.ref
-        .collection('circleMember')
-        .doc(doc.id)
-        .delete()
-    })
-    commit('initMember')
+      subCollection.docs.map(async doc => {
+        await snapShot.ref
+          .collection('circleMember')
+          .doc(doc.id)
+          .delete()
+      })
+      commit('initMember')
+    } catch (e) {
+      console.error(e)
+    }
   }
 }
 

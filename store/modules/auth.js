@@ -63,9 +63,13 @@ const actions = {
   },
   // ログアウト
   async logout({ commit }) {
-    await auth.signOut()
-    alert('ログアウトしました。')
-    commit('removeAccount')
+    try {
+      await auth.signOut()
+      alert('ログアウトしました。')
+      commit('removeAccount')
+    } catch (e) {
+      console.error(e)
+    }
   },
   // ユーザー作成してからそのままログインする
   async createUser({ dispatch, commit }, { email, password, username }) {

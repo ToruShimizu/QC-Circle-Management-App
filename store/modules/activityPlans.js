@@ -54,20 +54,24 @@ const mutations = {
 const actions = {
   // firestoreからactivityPlanのデータを取り出す
   async fetchActivityPlans({ getters, commit, dispatch }) {
-    const snapShot = await db
-      .collection(`users/${getters.userUid}/activityPlans`)
-      .orderBy('created', 'desc')
-      .get()
-    commit('initActivityPlans')
-    const id = snapShot.docs.map(doc => {
-      const planContents = doc.data()
-      commit('createActivityPlan', planContents)
-      return doc.data().id
-    })
-    id.map(doc => {
-      const activityPlansId = doc
-      dispatch('fetchComments', activityPlansId)
-    })
+    try {
+      const snapShot = await db
+        .collection(`users/${getters.userUid}/activityPlans`)
+        .orderBy('created', 'desc')
+        .get()
+      commit('initActivityPlans')
+      const id = snapShot.docs.map(doc => {
+        const planContents = doc.data()
+        commit('createActivityPlan', planContents)
+        return doc.data().id
+      })
+      id.map(doc => {
+        const activityPlansId = doc
+        dispatch('fetchComments', activityPlansId)
+      })
+    } catch (e) {
+      console.error(e)
+    }
   },
   // 活動計画追加
   async createActivityPlan({ commit, getters }, { planContents, file }) {
@@ -171,38 +175,50 @@ const actions = {
   // 活動計画削除
   async removeActivityPlan({ getters, commit, dispatch }, { id }) {
     console.debug('input: ', id)
-    await db
-      .collection(`users/${getters.userUid}/activityPlans`)
-      .doc(id)
-      .delete()
-    commit('removeActivityPlan', { activityPlanId: id })
-    dispatch('allRemoveComment', id)
-  },
-  async allRemoveActivityPlan({ commit, getters }) {
-    const snapShot = await db
-      .collection(`users/${getters.userUid}/activityPlans`)
-      .orderBy('created', 'desc')
-      .get()
-    snapShot.docs.map(async doc => {
+    try {
       await db
         .collection(`users/${getters.userUid}/activityPlans`)
-        .doc(doc.id)
+        .doc(id)
         .delete()
-      commit('initActivityPlans')
-    })
+      commit('removeActivityPlan', { activityPlanId: id })
+      dispatch('allRemoveComment', id)
+    } catch (e) {
+      console.error(e)
+    }
+  },
+  async allRemoveActivityPlan({ commit, getters }) {
+    try {
+      const snapShot = await db
+        .collection(`users/${getters.userUid}/activityPlans`)
+        .orderBy('created', 'desc')
+        .get()
+      snapShot.docs.map(async doc => {
+        await db
+          .collection(`users/${getters.userUid}/activityPlans`)
+          .doc(doc.id)
+          .delete()
+        commit('initActivityPlans')
+      })
+    } catch (e) {
+      console.error(e)
+    }
   },
   // 活動計画の完了状態切り替え
   async toggleDoneActivityPlan({ getters, commit, dispatch }, planContents) {
-    await db
-      .collection(`users/${getters.userUid}/activityPlans`)
-      .doc(planContents.id)
-      .update({
-        done: !planContents.done
-      })
-    if (!planContents.done) {
-      dispatch('updateCompletionDate', planContents)
+    try {
+      await db
+        .collection(`users/${getters.userUid}/activityPlans`)
+        .doc(planContents.id)
+        .update({
+          done: !planContents.done
+        })
+      if (!planContents.done) {
+        dispatch('updateCompletionDate', planContents)
+      }
+      commit('toggleDoneActivityPlan', planContents)
+    } catch (e) {
+      console.error(e)
     }
-    commit('toggleDoneActivityPlan', planContents)
   },
 
   // コメントの追加処理
@@ -219,31 +235,34 @@ const actions = {
       '時' +
       date.getMinutes() +
       '分'
-    const commentId = await db
-      .collection(`users/${getters.userUid}/activityPlans`)
-      .doc(id)
-      .collection(`comments/${getters.userUid}/message`)
-      .doc().id
+    try {
+      const commentId = await db
+        .collection(`users/${getters.userUid}/activityPlans`)
+        .doc(id)
+        .collection(`comments/${getters.userUid}/message`)
+        .doc().id
 
-    const comment = {
-      activityPlanId: id,
-      message,
-      id: commentId,
-      created: createTime
-    }
-    if (getters.userUid) {
+      const comment = {
+        activityPlanId: id,
+        message,
+        id: commentId,
+        created: createTime
+      }
       await db
         .collection(`users/${getters.userUid}/activityPlans`)
         .doc(id)
         .collection(`comments/${getters.userUid}/message`)
         .doc(commentId)
         .set(comment)
+
+      commit('addComment', { comment, id })
+    } catch (e) {
+      console.error(e)
     }
-    commit('addComment', { comment, id })
   },
   // コメントの削除
   async removeComment({ getters, commit }, comment) {
-    if (getters.userUid) {
+    try {
       const snapShot = await db
         .collection(`users/${getters.userUid}/activityPlans`)
         .doc(comment.activityPlanId)
@@ -255,38 +274,48 @@ const actions = {
         .delete()
 
       commit('removeComment', comment)
+    } catch (e) {
+      console.error(e)
     }
   },
   // コメントの取得
   async fetchComments({ getters, commit }, id) {
     commit('initComments')
-    const snapShot = await db
-      .collection(`users/${getters.userUid}/activityPlans`)
-      .doc(id)
-      .get()
-    const subCollection = await snapShot.ref
-      .collection(`comments/${getters.userUid}/message`)
-      .orderBy('created', 'desc')
-      .get()
-    subCollection.docs.map(doc => {
-      const comment = doc.data()
-      const commentId = comment.activityPlanId
-      commit('addComment', { comment, id: commentId })
-    })
+    try {
+      const snapShot = await db
+        .collection(`users/${getters.userUid}/activityPlans`)
+        .doc(id)
+        .get()
+      const subCollection = await snapShot.ref
+        .collection(`comments/${getters.userUid}/message`)
+        .orderBy('created', 'desc')
+        .get()
+      subCollection.docs.map(doc => {
+        const comment = doc.data()
+        const commentId = comment.activityPlanId
+        commit('addComment', { comment, id: commentId })
+      })
+    } catch (e) {
+      console.error(e)
+    }
   },
   async allRemoveComment({ commit, getters }, id) {
-    const snapShot = await db
-      .collection(`users/${getters.userUid}/activityPlans`)
-      .doc(id)
-      .get()
-    const subCollection = await snapShot.ref.collection(`comments/${getters.userUid}/message`).get()
-    subCollection.docs.map(
-      async doc =>
-        await snapShot.ref
-          .collection(`comments/${getters.userUid}/message`)
-          .doc(doc.id)
-          .delete()
-    )
+    try {
+      const snapShot = await db
+        .collection(`users/${getters.userUid}/activityPlans`)
+        .doc(id)
+        .get()
+      const subCollection = await snapShot.ref.collection(`comments/${getters.userUid}/message`).get()
+      subCollection.docs.map(
+        async doc =>
+          await snapShot.ref
+            .collection(`comments/${getters.userUid}/message`)
+            .doc(doc.id)
+            .delete()
+      )
+    } catch (e) {
+      console.error(e)
+    }
   }
 }
 
